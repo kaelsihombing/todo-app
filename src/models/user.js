@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 const userSchema = new Schema({
     fullname: {
         type: String,
-        required: true,
+        optional: true,
     },
     email: {
         type: String,
@@ -40,7 +40,7 @@ class User extends mongoose.model('User', userSchema) {
                     resolve({
                         id: data._id,
                         email: data.email,
-                        token: token
+                        token
                     })
                 })
                 .catch(err => {
