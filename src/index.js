@@ -6,10 +6,6 @@ dotenv.config()
 
 //  initialize mongoose connection
 require('./database')
-const {
-    notFound,
-    serverError
-} = require('./exceptionHandler')
 
 //  express middleware
 app.use(express.json())
@@ -28,7 +24,13 @@ app.get('/', (req, res) => {
     })
 })
 
-//  Exception Handler
+//  Exception Handlers
+const {
+    notFound,
+    serverError
+} = require('./exceptionHandler')
+
 app.use(serverError)
 app.use(notFound)
 
+module.exports = app;
