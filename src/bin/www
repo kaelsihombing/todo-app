@@ -1,0 +1,8 @@
+const app = require('../index.js')
+const port = process.env.PORT || 3000
+
+//  fire up server
+app.listen(port, () => {
+    console.log(`server started at ${Date()}`)
+    console.log(`Listening to port ${port}!`)
+})
