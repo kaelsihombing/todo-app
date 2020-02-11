@@ -12,7 +12,7 @@ function error(res, err, statusCode) {
     })
 }
 
-module.export = {
+module.exports = {
     success,
     error
 };
