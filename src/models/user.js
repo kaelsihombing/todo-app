@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken')
 const userSchema = new Schema({
     fullname: {
         type: String,
-        optional: true,
     },
     email: {
         type: String,
@@ -15,7 +14,7 @@ const userSchema = new Schema({
     },
     image: {
         type: String,
-        options: true
+        optional: true
     },
     encrypted_password: {
         type: String,
@@ -30,13 +29,13 @@ class User extends mongoose.model('User', userSchema) {
             if (password !== password_confirmation) return reject('Password doesn\'t match')
 
             let encrypted_password = bcrypt.hashSync(password, 10)
-
+            
             this.create({
                 email, encrypted_password
             })
                 .then(data => {
+                    console.log
                     let token = jwt.sign({ _id: data.id }, process.env.JWT_SIGNATURE_KEY)
-
                     resolve({
                         id: data._id,
                         email: data.email,

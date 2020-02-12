@@ -6,7 +6,7 @@ const {
 
 exports.create = async(req, res) => {
     try {
-        let result = await User.register(req.body)
+        let result = await User.register(req.body) 
         success(res, result, 201)
     } 
     catch(err) {

@@ -22,5 +22,5 @@
             }
         ]
     },
-    "ignorePatterns":["exceptionHandler.js"]
+    "ignorePatterns":["exceptionHandler.js","userTest.js"]
 }
