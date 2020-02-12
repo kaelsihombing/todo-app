@@ -39,7 +39,7 @@ class User extends mongoose.model('User', userSchema) {
                     resolve({
                         id: data._id,
                         email: data.email,
-                        token: token
+                        token
                     })
                 })
                 .catch(err => {

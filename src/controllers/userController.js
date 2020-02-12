@@ -1,7 +1,7 @@
 const User = require('../models/user')
 const {
     success,
-    error
+    error,
 } = require('../helpers/response')
 
 exports.create = async(req, res) => {

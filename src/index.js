@@ -5,7 +5,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 //  initialize mongoose connection
-require('./database')
+require('./database.js')
 
 //  express middleware
 app.use(express.json())
