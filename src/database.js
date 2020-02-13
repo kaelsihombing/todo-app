@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const dbConnectionString = {
     development: process.env.DB_CONNECTION,
     test: process.env.DB_CONNECTION_TEST,
-    staging: process.env.DB_CONNECTION_STAGGING,
+    staging: process.env.DB_CONNECTION_STAGING,
     production: process.env.DB_CONNECTION_PRODUCTION
 }
 
