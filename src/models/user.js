@@ -27,9 +27,18 @@ const userSchema = new Schema({
     encrypted_password: {
         type: String,
         required: true
+<<<<<<< HEAD
     },
     versionKey: false
 })
+=======
+    }
+}, {
+    versionKey: false,
+    timestamps: true,
+}
+)
+>>>>>>> ab3875de2d62de81f77a270ecffe74f50ea6f7cc
 
 class User extends mongoose.model('User', userSchema) {
 
@@ -43,7 +52,6 @@ class User extends mongoose.model('User', userSchema) {
                 email, encrypted_password
             })
                 .then(data => {
-                    console.log
                     let token = jwt.sign({ _id: data.id }, process.env.JWT_SIGNATURE_KEY)
                     resolve({
                         id: data._id,

@@ -20,20 +20,20 @@ const user = {
 
 describe('~USER API UNIT TESTING~', () => {
 
-    before(done => {
+    before(() => {
         User.create({
             ...user,
             encrypted_password: bcrypt.hashSync(user.password)
-        }).then(i => done());
+        // }).then(i => done());
     })
 
-    after(done => {
+    after(() => {
         User.deleteMany({})
-            .then(() => done());
+            // .then(() => done());
     })
 
     context('POST /api/v1/users/register', () => {
-        it('Should create new user', done => {
+        it('Should create new user', function() {
             let data = {
                 ...user,
                 email: 'test02@mail.com'
@@ -55,11 +55,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(data).to.have.property('email')
                     expect(data.email).to.eq(data.email)
 
-                    done();
+                    
                 })
         })
 
-        it('password and password_confirmation doesn\'t match', done => {
+        it('password and password_confirmation doesn\'t match', function(){
             let data = {
                 email: 'test01@mail.com',
                 password: '123456',
@@ -79,11 +79,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('string');
                     expect(error).to.eq('Password doesn\'t match');
-                    done();
+                    
                 })
         })
 
-        it('Should not create a new user because duplication data', done => {
+        it('Should not create a new user because duplication data', function() {
             let data = {
                 email: 'test01@mail.com',
                 password: '123456',
@@ -104,11 +104,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('object');
                     expect(error.errmsg).to.eq('E11000 duplicate key error collection: awesome-project_test.users index: email_1 dup key: { : "test01@mail.com" }')
-                    done();
+                    
                 })
         })
 
-        it('Should not create a new user due to validation error', done => {
+        it('Should not create a new user due to validation error', function() {
             let data = {
                 password: '123456',
                 password_confirmation: '123456'
@@ -128,13 +128,13 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('object');
                     expect(error.message).to.eq('Validation failed: email: Path `email` is required.')
-                    done();
+                    
                 })
         })
     })
 
     context('POST /api/v1/users/login', () => {
-        it('Should successfully logged in', done => {
+        it('Should successfully logged in', function(){
             chai.request(server)
                 .post('/api/v1/users/login')
                 .set('Content-Type', 'application/json')
@@ -152,11 +152,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(data).to.have.property('email')
                     expect(data).to.have.property('token')
                     // expect(data.token).to.eq(decoded)
-                    done();
+                    
                 })
         })
 
-        it('Should not successfully logged in because the password is wrong', done => {
+        it('Should not successfully logged in because the password is wrong', function() {
             let data = {
                 email: 'test01@mail.com',
                 password: 'test123',
@@ -177,11 +177,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(error).to.eq('Password is wrong');
                     
                     // expect(data.token).to.eq(decoded)
-                    done();
+                    
                 })
         })
 
-        it('Should not successfully logged in because email doesn\'t exist', done => {
+        it('Should not successfully logged in because email doesn\'t exist', function() {
             let data = {
                 email: 'test03@mail.com',
                 password: '123456',
@@ -202,7 +202,7 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(error).to.eq('Email doesn\'t exist');
                     
                     // expect(data.token).to.eq(decoded)
-                    done();
+                  
                 })
         })
     })
