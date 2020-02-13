@@ -13,6 +13,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const user = {
+    fullname:'Orang test',
     email: 'test01@mail.com',
     password: '123456',
     password_confirmation: '123456'
@@ -52,13 +53,14 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(true);
                     expect(data).to.be.an('object');
                     expect(data).to.have.property('id')
+                    expect(data).to.have.property('fullname')
                     expect(data).to.have.property('email')
-                    expect(data.email).to.eq(data.email)
                 })
         })
 
         it('password and password_confirmation doesn\'t match', function () {
             let data = {
+                fullname:'Orang test',
                 email: 'test01@mail.com',
                 password: '123456',
                 password_confirmation: '12345'
@@ -82,6 +84,7 @@ describe('~USER API UNIT TESTING~', () => {
 
         it('Should not create a new user because duplication data', function () {
             let data = {
+                fullname:'Orang test',
                 email: 'test01@mail.com',
                 password: '123456',
                 password_confirmation: '123456'
@@ -107,6 +110,7 @@ describe('~USER API UNIT TESTING~', () => {
 
         it('Should not create a new user due to validation error', function () {
             let data = {
+                fullname:'Orang test',
                 password: '123456',
                 password_confirmation: '123456'
             }
