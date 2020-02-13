@@ -18,6 +18,7 @@ mongoose.connect(
     .then(() => {
         console.log(`Database Connected`)
     })
-    .catch(() => {
+    .catch(err => {
+        console.log(err)
         process.exit(1)
     })
