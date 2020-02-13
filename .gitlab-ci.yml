@@ -1,0 +1,15 @@
+stages:
+    - test
+
+test:
+    image: node:12.13
+    stage: test
+    variables:
+        DB_CONNECTION_TEST: "mongodb://localhost:27018"
+    services: 
+        - mongo:latest
+    script: 
+        - npm install
+        - npm test
+    only:
+        - master

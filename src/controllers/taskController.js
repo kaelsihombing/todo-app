@@ -12,8 +12,7 @@ exports.createTask = async (req, res) => {
             owner: req.user._id,
         }
 
-        let data = await Task.create(params)
-        console.log(data)
+        let data = await Task.newTask(params)
         success(res, data, 201)
     }
 
