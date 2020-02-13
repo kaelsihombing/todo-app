@@ -11,10 +11,13 @@ const taskSchema = new Schema({
         min: Date.now(),
         required: true,
     },
+    importanceLevel: {
+        type: Number,
+        enum: [1, 2, 3], // 1=Low, 2=Normal, 3=High
+        default: 2
+    },
     importance: {
         type: String,
-        enum: ['High', 'Normal', 'Low'],
-        default: 'Low'
     },
     completion: {
         type: Boolean,
@@ -38,6 +41,30 @@ class Task extends mongoose.model('Task', taskSchema) {
             this.create({
                 title, dueDate, owner
             })
+            .then(data => {
+                resolve(data)
+            })
+            .catch(err => {
+                reject(err)
+            })
+        })
+    }
+
+    static findTask(owner) {
+        return new Promise ((resolve, reject) => {
+            this.find({owner: owner})
+            .then(data => {
+                resolve(data)
+            })
+            .catch(err => {
+                reject(err)
+            })
+        })
+    }
+
+    static updateTask(id, {title, dueDate, importance, completion,}) {
+        return new Promise ((resolve, reject) => {
+            this.findByIdAndUpdate(id, {title, dueDate, importance, completion})
             .then(data => {
                 resolve(data)
             })
