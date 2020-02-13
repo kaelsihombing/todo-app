@@ -20,7 +20,11 @@ const userSchema = new Schema({
         type: String,
         required: true
     }
-})
+}, {
+    versionKey: false,
+    timestamps: true,
+}
+)
 
 class User extends mongoose.model('User', userSchema) {
 
@@ -29,12 +33,11 @@ class User extends mongoose.model('User', userSchema) {
             if (password !== password_confirmation) return reject('Password doesn\'t match')
 
             let encrypted_password = bcrypt.hashSync(password, 10)
-            
+
             this.create({
                 email, encrypted_password
             })
                 .then(data => {
-                    console.log
                     let token = jwt.sign({ _id: data.id }, process.env.JWT_SIGNATURE_KEY)
                     resolve({
                         id: data._id,

@@ -31,5 +31,21 @@ const taskSchema = new Schema({
     }
 );
 
-const Task = mongoose.model('Task', taskSchema);
+
+class Task extends mongoose.model('Task', taskSchema) {
+    static newTask({ title, dueDate, owner }) {
+        return new Promise ((resolve, reject) => {
+            this.create({
+                title, dueDate, owner
+            })
+            .then(data => {
+                resolve(data)
+            })
+            .catch(err => {
+                reject(err)
+            })
+        })
+    }
+}
+
 module.exports = Task;
