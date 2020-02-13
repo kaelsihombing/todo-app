@@ -22,5 +22,5 @@
             }
         ]
     },
-    "ignorePatterns":["exceptionHandler.js","userTest.js","taskSpec.js"]
+    "ignorePatterns":["exceptionHandler.js","userTest.js","taskSpec.js","noUsedFunctions.js"]
 }

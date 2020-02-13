@@ -27,36 +27,27 @@ const userSchema = new Schema({
     encrypted_password: {
         type: String,
         required: true
-<<<<<<< HEAD
     },
     versionKey: false
 })
-=======
-    }
-}, {
-    versionKey: false,
-    timestamps: true,
-}
-)
->>>>>>> ab3875de2d62de81f77a270ecffe74f50ea6f7cc
 
 class User extends mongoose.model('User', userSchema) {
-
-    static register({ email, password, password_confirmation }) {
+    static register({ fullname, email, password, password_confirmation }) {
         return new Promise((resolve, reject) => {
             if (password !== password_confirmation) return reject('Password doesn\'t match')
 
             let encrypted_password = bcrypt.hashSync(password, 10)
 
             this.create({
-                email, encrypted_password
+                fullname, email, encrypted_password
             })
                 .then(data => {
                     let token = jwt.sign({ _id: data.id }, process.env.JWT_SIGNATURE_KEY)
                     resolve({
                         id: data._id,
+                        fullname: data.fullname,
                         email: data.email,
-                        token
+                        token: token
                     })
                 })
                 .catch(err => {
@@ -79,6 +70,7 @@ class User extends mongoose.model('User', userSchema) {
 
                     resolve({
                         id: data._id,
+                        fullname: data.fullname,
                         email: data.email,
                         token: token
                     })
@@ -86,54 +78,8 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
-    static updateNameAndImage(id, fullname, buffer) {
-
-        return new Promise((resolve, reject) => {
-
-            imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
-
-                .then(url => {
-                    this.updateOne({ _id: id }, { fullname: fullname.fullname, image: url.url })
-
-                        .then(() => {
-                            resolve({
-                                id: id,
-                                fullname: fullname.fullname,
-                                image: url.url
-                            })
-                        })
-                })
-
-                .catch(err => {
-                    reject(err)
-                })
-        })
-    }
-
-    // static updateData(id, data, buffer) {
-
-    //     return new Promise((resolve, reject) => {
-    //         console.log(data)
-    //         imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
-    //             .then(url => {
-    //                 this.findByIdAndUpdate({ _id: id }, { fullname: data.fullname, email: data.email, image: url.url })
-
-    //                     .then(() => {
-    //                         resolve({
-    //                             data: data,
-    //                             image: url.url
-    //                         })
-    //                     })
-    //             })
-
-    //             .catch(err => {
-    //                 reject(err)
-    //             })
-    //     })
-    // }
 
     static updateData(id, data, buffer) {
-        console.log(id, data, buffer)
         return new Promise((resolve, reject) => {
             if (buffer !== undefined) {
                 imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
@@ -204,64 +150,5 @@ class User extends mongoose.model('User', userSchema) {
         })
 
     }
-
-    // static updateData(req) {
-
-    //     return new Promise((resolve, reject) => {
-
-    //         var id = req.user._id
-    //         // var fullname = req.body.fullname
-    //         // var email = req.body.email
-    //         var buffer = req.file.buffer
-
-    //         imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
-
-    //             .then(url => {
-    //                 this.findOne({ _id: id }, function (err, foundData) {
-    //                     if (err) {
-    //                         reject(err)
-    //                     } 
-    //                     else {
-    //                         if (!foundData) {
-    //                             reject(err)
-    //                         } else {
-    //                             // console.log(data.fullname)
-    //                             if (req.body.fullname) {
-    //                                 foundData.fullname = req.body.fullname;
-    //                             }
-
-    //                             if (req.body.email) {
-    //                                 console.log('hai5')
-    //                                 foundData.email = req.body.email;
-    //                             }
-
-    //                             if (url) {
-    //                                 console.log('hai6')
-    //                                 foundData.image = url.url
-    //                             }
-
-    //                             foundData.save(function (err, foundData) {
-    //                                 if (err) {
-    //                                     reject(err)
-    //                                 } else {
-    //                                     resolve({
-    //                                         data: foundData
-    //                                     })
-    //                                 }
-    //                             })
-    //                         }
-    //                     }
-
-    //                 })
-    //             })
-    //     })
-
-    // }
-
-
-
-
-
-
 }
 module.exports = User;
