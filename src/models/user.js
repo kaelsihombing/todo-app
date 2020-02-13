@@ -27,9 +27,12 @@ const userSchema = new Schema({
     encrypted_password: {
         type: String,
         required: true
-    },
-    versionKey: false
-})
+    }
+}, {
+    versionKey: false,
+    timestamps: true,
+}
+)
 
 class User extends mongoose.model('User', userSchema) {
     static register({ fullname, email, password, password_confirmation }) {

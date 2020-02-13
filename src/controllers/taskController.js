@@ -40,6 +40,7 @@ exports.editTask = async (req, res) => {
             importance: req.body.importance,
             completion: req.body.completion,
         }
+        
         let result = await Task.updateTask(req.query.id,params)
         success(res, result, 201)
     }
