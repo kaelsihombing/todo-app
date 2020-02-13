@@ -3,6 +3,14 @@ const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
+const Imagekit = require('imagekit')
+
+const imagekit = new Imagekit({
+    publicKey: process.env.publicKey,
+    privateKey: process.env.privateKey,
+    urlEndpoint: process.env.urlEndpoint
+})
+
 const userSchema = new Schema({
     fullname: {
         type: String,
@@ -19,12 +27,18 @@ const userSchema = new Schema({
     encrypted_password: {
         type: String,
         required: true
+<<<<<<< HEAD
+    },
+    versionKey: false
+})
+=======
     }
 }, {
     versionKey: false,
     timestamps: true,
 }
 )
+>>>>>>> ab3875de2d62de81f77a270ecffe74f50ea6f7cc
 
 class User extends mongoose.model('User', userSchema) {
 
@@ -71,6 +85,183 @@ class User extends mongoose.model('User', userSchema) {
                 })
         })
     }
-}
 
+    static updateNameAndImage(id, fullname, buffer) {
+
+        return new Promise((resolve, reject) => {
+
+            imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
+
+                .then(url => {
+                    this.updateOne({ _id: id }, { fullname: fullname.fullname, image: url.url })
+
+                        .then(() => {
+                            resolve({
+                                id: id,
+                                fullname: fullname.fullname,
+                                image: url.url
+                            })
+                        })
+                })
+
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    // static updateData(id, data, buffer) {
+
+    //     return new Promise((resolve, reject) => {
+    //         console.log(data)
+    //         imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
+    //             .then(url => {
+    //                 this.findByIdAndUpdate({ _id: id }, { fullname: data.fullname, email: data.email, image: url.url })
+
+    //                     .then(() => {
+    //                         resolve({
+    //                             data: data,
+    //                             image: url.url
+    //                         })
+    //                     })
+    //             })
+
+    //             .catch(err => {
+    //                 reject(err)
+    //             })
+    //     })
+    // }
+
+    static updateData(id, data, buffer) {
+        console.log(id, data, buffer)
+        return new Promise((resolve, reject) => {
+            if (buffer !== undefined) {
+                imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
+                    .then(url => {
+                        this.findOne({ _id: id }, function (err, foundData) {
+                            if (err) {
+                                reject(err)
+                            } else {
+                                if (!foundData) {
+                                    reject(err)
+                                } else {
+                                    if (data.fullname) {
+                                        foundData.fullname = data.fullname;
+                                    }
+
+                                    if (data.email) {
+                                        foundData.email = data.email;
+                                    }
+
+                                    if (buffer) {
+                                        foundData.image = url.url
+                                    }
+
+                                    foundData.save(function (err, foundData) {
+                                        if (err) {
+                                            reject(err)
+                                        } else {
+                                            resolve({
+                                                data: foundData
+                                            })
+                                        }
+                                    })
+                                }
+                            }
+
+                        })
+                    })
+            } else {
+                this.findOne({ _id: id }, function (err, foundData) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        if (!foundData) {
+                            reject(err)
+                        } else {
+                            if (data.fullname) {
+                                foundData.fullname = data.fullname;
+                            }
+
+                            if (data.email) {
+                                foundData.email = data.email;
+                            }
+
+                            foundData.save(function (err, foundData) {
+                                if (err) {
+                                    reject(err)
+                                } else {
+                                    resolve({
+                                        data: foundData
+                                    })
+                                }
+                            })
+                        }
+                    }
+
+                })
+            }
+        })
+
+    }
+
+    // static updateData(req) {
+
+    //     return new Promise((resolve, reject) => {
+
+    //         var id = req.user._id
+    //         // var fullname = req.body.fullname
+    //         // var email = req.body.email
+    //         var buffer = req.file.buffer
+
+    //         imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
+
+    //             .then(url => {
+    //                 this.findOne({ _id: id }, function (err, foundData) {
+    //                     if (err) {
+    //                         reject(err)
+    //                     } 
+    //                     else {
+    //                         if (!foundData) {
+    //                             reject(err)
+    //                         } else {
+    //                             // console.log(data.fullname)
+    //                             if (req.body.fullname) {
+    //                                 foundData.fullname = req.body.fullname;
+    //                             }
+
+    //                             if (req.body.email) {
+    //                                 console.log('hai5')
+    //                                 foundData.email = req.body.email;
+    //                             }
+
+    //                             if (url) {
+    //                                 console.log('hai6')
+    //                                 foundData.image = url.url
+    //                             }
+
+    //                             foundData.save(function (err, foundData) {
+    //                                 if (err) {
+    //                                     reject(err)
+    //                                 } else {
+    //                                     resolve({
+    //                                         data: foundData
+    //                                     })
+    //                                 }
+    //                             })
+    //                         }
+    //                     }
+
+    //                 })
+    //             })
+    //     })
+
+    // }
+
+
+
+
+
+
+}
 module.exports = User;
