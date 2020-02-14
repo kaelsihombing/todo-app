@@ -5,7 +5,7 @@ const {
 } = require('../helpers/response.js');
 
 exports.createTask = async (req, res) => {
-    try{
+    try {
         let params = {
             title: req.body.title,
             dueDate: req.body.dueDate,
@@ -16,36 +16,33 @@ exports.createTask = async (req, res) => {
         success(res, result, 201)
     }
 
-    catch(err){
+    catch (err) {
         error(res, err, 422)
     }
 }
 
 exports.viewTask = async (req, res) => {
-    try{
+    try {
         let result = await Task.findTask(req.user._id)
         success(res, result, 200)
     }
 
-    catch(err){
+    catch (err) {
         error(res, err, 422)
     }
 }
 
 exports.editTask = async (req, res) => {
-    try{
-        let params = {
-            title: req.body.title,
-            dueDate: req.body.dueDate,
-            importance: req.body.importance,
-            completion: req.body.completion,
-        }
-        
-        let result = await Task.updateTask(req.query.id,params)
+    try {
+        let params = {};
+        for (let prop in req.body) if (req.body[prop]) params[prop] = req.body[prop];
+        console.log(params);
+
+        let result = await Task.updateTask(req.query.id, params)
         success(res, result, 201)
     }
 
-    catch(err){
+    catch (err) {
         error(res, err, 422)
     }
 }
