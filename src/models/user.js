@@ -14,6 +14,7 @@ const imagekit = new Imagekit({
 const userSchema = new Schema({
     fullname: {
         type: String,
+        required: true
     },
     email: {
         type: String,
@@ -40,7 +41,7 @@ class User extends mongoose.model('User', userSchema) {
             if (password !== password_confirmation) return reject('Password doesn\'t match')
 
             let encrypted_password = bcrypt.hashSync(password, 10)
-
+            
             this.create({
                 fullname, email, encrypted_password
             })
