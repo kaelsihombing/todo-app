@@ -13,7 +13,6 @@ const Task = require('../models/task.js');
 const userFixtures = require('../fixtures/userFixtures.js');
 const userSample = userFixtures.create();
 const taskFixtures = require('../fixtures/taskFixtures.js');
-const taskSample = taskFixtures.create();
 
 describe('TASK API UNIT TESTING', () => {
     before(function () {
@@ -36,7 +35,7 @@ describe('TASK API UNIT TESTING', () => {
         it('Should create a new task for an authorized user', function () {
             let taskSample = taskFixtures.create();
             chai.request(server)
-                .post('/api/v1/users/login')
+                .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(userSample))
                 .end((err, res) => {
@@ -60,7 +59,7 @@ describe('TASK API UNIT TESTING', () => {
         it('Should not create a new task due to invalid token', function () {
             let taskSample = taskFixtures.create();
             chai.request(server)
-                .post('/api/v1/users/login')
+                .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(userSample))
                 .end((err, res) => {
@@ -82,7 +81,7 @@ describe('TASK API UNIT TESTING', () => {
             let taskSample = taskFixtures.create();
             delete taskSample.title;
             chai.request(server)
-                .post('/api/v1/users/login')
+                .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(userSample))
                 .end((err, res) => {
@@ -104,7 +103,7 @@ describe('TASK API UNIT TESTING', () => {
             let taskSample = taskFixtures.create();
             delete taskSample.dueDate;
             chai.request(server)
-                .post('/api/v1/users/login')
+                .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(userSample))
                 .end((err, res) => {
@@ -127,7 +126,7 @@ describe('TASK API UNIT TESTING', () => {
             delete taskSample.title;
             delete taskSample.dueDate;
             chai.request(server)
-                .post('/api/v1/users/login')
+                .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(userSample))
                 .end((err, res) => {
@@ -149,7 +148,7 @@ describe('TASK API UNIT TESTING', () => {
     context('GET /api/v1/tasks/view', () => {
         it('Should show tasks for current user', function () {
             chai.request(server)
-                .post('/api/v1/users/login')
+                .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(userSample))
                 .end((err, res) => {
@@ -158,6 +157,7 @@ describe('TASK API UNIT TESTING', () => {
                         .set('Content-Type', 'application/json')
                         .set('Authorization', res.body.data.token)
                         .end(function (err, res) {
+                            console.log(res.body)
                             expect(res.status).to.equal(200);
                             expect(res.body).to.be.an('object');
                             expect(res.body).to.have.property('success');
@@ -170,7 +170,7 @@ describe('TASK API UNIT TESTING', () => {
 
         it('Should not show tasks for current user due to invalid token', function () {
             chai.request(server)
-                .post('/api/v1/users/login')
+                .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(userSample))
                 .end((err, res) => {
@@ -188,23 +188,22 @@ describe('TASK API UNIT TESTING', () => {
         })
     })
 
-    // context('POST /api/v1/tasks/edit', () => {
-    //     it('Should show tasks for current user', function () {
+    // context('PUT /api/v1/tasks/edit', () => {
+    //     it('Should update a selected task for current user', function () {
+    //         const taskSample = taskFixtures.create();
     //         chai.request(server)
-    //             .post('/api/v1/users/login')
+    //             .post('/api/v1/auth/login')
     //             .set('Content-Type', 'application/json')
     //             .send(JSON.stringify(userSample))
     //             .end((err, res) => {
-    //                 let taskUpdate = {
-
-    //                 }
     //                 chai.request(server)
     //                     .put('/api/v1/tasks/edit')
     //                     .set('Content-Type', 'application/json')
     //                     .set('Authorization', res.body.data.token)
-    //                     .query('')
-    //                     .send(JSON.stringify(taskUpdate))
+    //                     .query({id: })
+    //                     .send(JSON.stringify(taskSample))
     //                     .end(function (err, res) {
+    //                         console.log(res.body)
     //                         expect(res.status).to.equal(200);
     //                         expect(res.body).to.be.an('object');
     //                         expect(res.body).to.have.property('success');
@@ -212,6 +211,7 @@ describe('TASK API UNIT TESTING', () => {
     //                         let { success, data } = res.body;
     //                         expect(success).to.eq(true);
     //                     });
+                    
     //             })
     //     })
     // })
