@@ -258,6 +258,7 @@
             "example": "sntmcl1"
           },
           "password_confirmation": {
+            "type": "string",
             "example": "sntmcl1"
           }
         }
