@@ -13,8 +13,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const user = {
-    fullname:'Orang test',
-    email: 'test01@mail.com',
+    fullname: 'Orang test',
+    email: 'test00@mail.com',
     password: '123456',
     password_confirmation: '123456'
 }
@@ -24,9 +24,9 @@ describe('~USER API UNIT TESTING~', () => {
         User.deleteMany({}, function() {})
         User.create({
             ...user,
-            encrypted_password: bcrypt.hashSync(user.password)
-            // }).then(i => done());
+            encrypted_password: bcrypt.hashSync(user.password, 10),
         })
+        // .then(i => done());
     })
 
     after(function () {
@@ -34,11 +34,12 @@ describe('~USER API UNIT TESTING~', () => {
         // .then(() => done());
     })
 
+    //===================REGISTER====================
     context('POST /api/v1/users/register', () => {
-        it('Should create new user', function () {
+        it('Should create new user', done => {
             let data = {
                 ...user,
-                email: 'test02@mail.com'
+                email: "test01@gmail.com"
             }
 
             chai.request(server)
@@ -46,6 +47,7 @@ describe('~USER API UNIT TESTING~', () => {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
+                    // console.log(res.body)
                     expect(res.status).to.equal(201);
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -56,15 +58,16 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(data).to.have.property('id')
                     expect(data).to.have.property('fullname')
                     expect(data).to.have.property('email')
+                    done();
                 })
         })
 
-        it('password and password_confirmation doesn\'t match', function () {
+        it('password and password_confirmation doesn\'t match', done => {
             let data = {
-                fullname:'Orang test',
-                email: 'test01@mail.com',
+                fullname: 'Orang test',
+                email: 'test02@mail.com',
                 password: '123456',
-                password_confirmation: '12345'
+                password_confirmation: '1234'
             }
 
             chai.request(server)
@@ -80,13 +83,14 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('string');
                     expect(error).to.eq('Password doesn\'t match');
+                    done();
                 })
         })
 
-        it('Should not create a new user because duplication data', function () {
+        it('Should not create a new user because duplication data', done => {
             let data = {
-                fullname:'Orang test',
-                email: 'test01@mail.com',
+                fullname: 'Orang test',
+                email: 'test00@mail.com',
                 password: '123456',
                 password_confirmation: '123456'
             }
@@ -96,7 +100,6 @@ describe('~USER API UNIT TESTING~', () => {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
-                    // console.log(res.body);
                     expect(res.status).to.eq(422);
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -104,14 +107,14 @@ describe('~USER API UNIT TESTING~', () => {
                     let { success, error } = res.body;
                     expect(success).to.eq(false);
                     expect(error).to.be.an('object');
-                    expect(error.errmsg).to.eq('E11000 duplicate key error collection: awesome-project_test.users index: email_1 dup key: { : "test01@mail.com" }')
-
+                    expect(error.errmsg).to.eq('E11000 duplicate key error collection: awesome-project_test.users index: email_1 dup key: { : "test00@mail.com" }')
+                    done();
                 })
         })
 
-        it('Should not create a new user due to validation error', function () {
+        it('Should not create a new user due to validation error', done => {
             let data = {
-                fullname:'Orang test',
+                fullname: 'Orang test',
                 password: '123456',
                 password_confirmation: '123456'
             }
@@ -130,13 +133,14 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('object');
                     expect(error.message).to.eq('Validation failed: email: Path `email` is required.')
-
+                    done();
                 })
         })
     })
 
+    // ==================LOGIN===========================
     context('POST /api/v1/users/login', () => {
-        it('Should successfully logged in', function () {
+        it('Should successfully logged in', done => {
             chai.request(server)
                 .post('/api/v1/users/login')
                 .set('Content-Type', 'application/json')
@@ -153,14 +157,13 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(data).to.have.property('id')
                     expect(data).to.have.property('email')
                     expect(data).to.have.property('token')
-                    // expect(data.token).to.eq(decoded)
-
+                    done();
                 })
         })
 
-        it('Should not successfully logged in because the password is wrong', function () {
+        it('Should not successfully logged in because the password is wrong', done => {
             let data = {
-                email: 'test01@mail.com',
+                email: 'test00@mail.com',
                 password: 'test123',
             }
             chai.request(server)
@@ -177,13 +180,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('string');
                     expect(error).to.eq('Password is wrong');
-
-                    // expect(data.token).to.eq(decoded)
-
+                    done();
                 })
         })
 
-        it('Should not successfully logged in because email doesn\'t exist', function () {
+        it('Should not successfully logged in because email doesn\'t exist', done => {
             let data = {
                 email: 'test03@mail.com',
                 password: '123456',
@@ -202,10 +203,37 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('string');
                     expect(error).to.eq('Email doesn\'t exist');
-
-                    // expect(data.token).to.eq(decoded)
-
+                    done();
                 })
         })
     })
+
+    // ===================UPDATE DATA USER=================================
+    // context('POST /api/v1/users/update', () => {
+    //     it('Should successfully update user data', done => {
+    //         let data = {
+    //             ...user,
+    //             email: 'test04@mail.com'
+    //         }
+    //             chai.request(server)
+    //                 .put('/api/v1/users/update')
+    //                 .set('Content-Type', 'application/json')
+    //                 .send(JSON.stringify(data))
+    //                 .end(function (err, res) {
+    //                     // console.log(res.body)
+    //                     expect(res.status).to.equal(201);
+    //                     // expect(res.body).to.be.an('object')
+    //                     // expect(res.body).to.have.property('success');
+    //                     // expect(res.body).to.have.property('data');
+    //                     // let { success, data } = res.body;
+    //                     // expect(success).to.eq(true);
+    //                     // expect(data).to.be.an('object');
+    //                     // expect(data).to.have.property('id')
+    //                     // expect(data).to.have.property('fullname')
+    //                     // expect(data).to.have.property('email')
+    //                     done();
+    //                 })
+    //     })
+    // })
+
 })
