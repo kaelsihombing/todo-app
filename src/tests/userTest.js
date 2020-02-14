@@ -36,7 +36,7 @@ describe('~USER API UNIT TESTING~', () => {
 
     //===================REGISTER====================
     context('POST /api/v1/users/register', () => {
-        it('Should create new user', done => {
+        it('Should create new user', function () {
             let data = {
                 ...user,
                 email: "test01@gmail.com"
@@ -58,11 +58,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(data).to.have.property('id')
                     expect(data).to.have.property('fullname')
                     expect(data).to.have.property('email')
-                    done();
+                   
                 })
         })
 
-        it('password and password_confirmation doesn\'t match', done => {
+        it('password and password_confirmation doesn\'t match', function (){
             let data = {
                 fullname: 'Orang test',
                 email: 'test02@mail.com',
@@ -83,11 +83,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('string');
                     expect(error).to.eq('Password doesn\'t match');
-                    done();
+                    
                 })
         })
 
-        it('Should not create a new user because duplication data', done => {
+        it('Should not create a new user because duplication data', function () {
             let data = {
                 fullname: 'Orang test',
                 email: 'test00@mail.com',
@@ -108,11 +108,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('object');
                     expect(error.errmsg).to.eq('E11000 duplicate key error collection: awesome-project_test.users index: email_1 dup key: { : "test00@mail.com" }')
-                    done();
+                    
                 })
         })
 
-        it('Should not create a new user due to validation error', done => {
+        it('Should not create a new user due to validation error', function () {
             let data = {
                 fullname: 'Orang test',
                 password: '123456',
@@ -133,14 +133,14 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('object');
                     expect(error.message).to.eq('Validation failed: email: Path `email` is required.')
-                    done();
+                    
                 })
         })
     })
 
     // ==================LOGIN===========================
     context('POST /api/v1/users/login', () => {
-        it('Should successfully logged in', done => {
+        it('Should successfully logged in', function () {
             chai.request(server)
                 .post('/api/v1/users/login')
                 .set('Content-Type', 'application/json')
@@ -157,11 +157,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(data).to.have.property('id')
                     expect(data).to.have.property('email')
                     expect(data).to.have.property('token')
-                    done();
+                   
                 })
         })
 
-        it('Should not successfully logged in because the password is wrong', done => {
+        it('Should not successfully logged in because the password is wrong', function () {
             let data = {
                 email: 'test00@mail.com',
                 password: 'test123',
@@ -180,11 +180,11 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('string');
                     expect(error).to.eq('Password is wrong');
-                    done();
+                    
                 })
         })
 
-        it('Should not successfully logged in because email doesn\'t exist', done => {
+        it('Should not successfully logged in because email doesn\'t exist', function () {
             let data = {
                 email: 'test03@mail.com',
                 password: '123456',
@@ -203,7 +203,7 @@ describe('~USER API UNIT TESTING~', () => {
                     expect(success).to.eq(false);
                     expect(error).to.be.an('string');
                     expect(error).to.eq('Email doesn\'t exist');
-                    done();
+                    
                 })
         })
     })
