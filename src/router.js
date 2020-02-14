@@ -7,9 +7,9 @@ const authenticate = require('./middlewares/authenticate')
 const multer = require('./middlewares/multer')
 
 //=============USER-ROUTER
-router.post('/users/register', user.create)
-router.post('/users/login', user.login)
-router.put('/users/update', multer, authenticate, user.updateData)
+router.post('/users', user.create)
+router.put('/users', multer, authenticate, user.updateData)
+router.post('/auth/login', user.login)
 
 //=============TASK-ROUTER
 router.post('/tasks/create', authenticate, task.createTask);

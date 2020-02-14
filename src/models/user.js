@@ -19,15 +19,15 @@ const userSchema = new Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
     image: {
         type: String,
-        optional: true
+        optional: true,
     },
     encrypted_password: {
         type: String,
-        required: true
+        required: true,
     }
 }, {
     versionKey: false,

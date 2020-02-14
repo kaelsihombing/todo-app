@@ -56,16 +56,14 @@ class Task extends mongoose.model('Task', taskSchema) {
             .then(data => {
                 resolve(data)
             })
-            .catch(err => {
-                reject(err)
-            })
         })
     }
 
-    static updateTask(id, {title, dueDate, importance, completion,}) {
+    static updateTask(_id, update) {
         return new Promise ((resolve, reject) => {
-            this.findByIdAndUpdate(id, {title, dueDate, importance, completion})
+            this.findOneAndUpdate({_id: _id}, {update}, {new: true})
             .then(data => {
+                console.log(data)
                 resolve(data)
             })
             .catch(err => {
