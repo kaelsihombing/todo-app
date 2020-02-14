@@ -38,7 +38,7 @@ const userSchema = new Schema({
 class User extends mongoose.model('User', userSchema) {
     static register({ fullname, email, password, password_confirmation }) {
         return new Promise((resolve, reject) => {
-            if (password !== password_confirmation) return reject('Password doesn\'t match')
+            if (password !== password_confirmation) return reject('Password and Password Confirmation doesn\'t match')
 
             let encrypted_password = bcrypt.hashSync(password, 10)
             
