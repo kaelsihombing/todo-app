@@ -79,7 +79,7 @@ describe('~USER API UNIT TESTING~', () => {
                 let { success, error } = res.body;
                 expect(success).to.eq(false);
                 expect(error).to.be.an('string');
-                expect(error).to.eq('Password doesn\'t match');
+                expect(error).to.eq('Password and Password Confirmation doesn\'t match');
 
             })
     })
