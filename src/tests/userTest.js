@@ -35,7 +35,7 @@ describe('~USER API UNIT TESTING~', () => {
     })
 
     //===================REGISTER====================
-    context('POST /api/v1/users/register', () => {
+    context('POST /api/v1/users, () => {
         it('Should create new user', function () {
             let data = {
                 ...user,
@@ -43,7 +43,7 @@ describe('~USER API UNIT TESTING~', () => {
             }
 
             chai.request(server)
-                .post('/api/v1/users/register')
+                .post('/api/v1/users')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
@@ -71,7 +71,7 @@ describe('~USER API UNIT TESTING~', () => {
             }
 
             chai.request(server)
-                .post('/api/v1/users/register')
+                .post('/api/v1/users')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
@@ -96,7 +96,7 @@ describe('~USER API UNIT TESTING~', () => {
             }
 
             chai.request(server)
-                .post('/api/v1/users/register')
+                .post('/api/v1/users')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
@@ -120,7 +120,7 @@ describe('~USER API UNIT TESTING~', () => {
             }
 
             chai.request(server)
-                .post('/api/v1/users/register')
+                .post('/api/v1/users')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
@@ -139,10 +139,10 @@ describe('~USER API UNIT TESTING~', () => {
     })
 
     // ==================LOGIN===========================
-    context('POST /api/v1/users/login', () => {
+    context('POST /api/v1/auth/login', () => {
         it('Should successfully logged in', function () {
             chai.request(server)
-                .post('/api/v1/users/login')
+                .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(user))
                 .end(function (err, res) {
@@ -167,7 +167,7 @@ describe('~USER API UNIT TESTING~', () => {
                 password: 'test123',
             }
             chai.request(server)
-                .post('/api/v1/users/login')
+                .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
@@ -190,7 +190,7 @@ describe('~USER API UNIT TESTING~', () => {
                 password: '123456',
             }
             chai.request(server)
-                .post('/api/v1/users/login')
+                .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
