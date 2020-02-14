@@ -21,6 +21,7 @@ const user = {
 
 describe('~USER API UNIT TESTING~', () => {
     before(function () {
+        User.deleteMany({}, function() {})
         User.create({
             ...user,
             encrypted_password: bcrypt.hashSync(user.password)
@@ -29,7 +30,7 @@ describe('~USER API UNIT TESTING~', () => {
     })
 
     after(function () {
-        User.deleteMany({})
+        User.deleteMany({}, function() {})
         // .then(() => done());
     })
 

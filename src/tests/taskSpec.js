@@ -13,24 +13,27 @@ const Task = require('../models/task.js');
 const userFixtures = require('../fixtures/userFixtures.js');
 const userSample = userFixtures.create();
 const taskFixtures = require('../fixtures/taskFixtures.js');
-// const taskSample = taskFixtures.create();
+const taskSample = taskFixtures.create();
 
 describe('TASK API UNIT TESTING', () => {
-    before(function() {
+    before(function () {
+        Task.deleteMany({}, function () { });
+        User.deleteMany({}, function () { });
         User.register({
+            fullname: userSample.fullname,
             email: userSample.email,
             password: userSample.password,
             password_confirmation: userSample.password,
         })
     })
 
-    afterEach(function() {
-        Task.deleteMany({});
-        User.deleteMany({});
+    after(function () {
+        Task.deleteMany({}, function () { });
+        User.deleteMany({}, function () { });
     })
 
     context('POST /api/v1/tasks/create', () => {
-        it('Should create a new task for an authorized user', function() {
+        it('Should create a new task for an authorized user', function () {
             let taskSample = taskFixtures.create();
             chai.request(server)
                 .post('/api/v1/users/login')
@@ -54,7 +57,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should not create a new task due to invalid token', function() {
+        it('Should not create a new task due to invalid token', function () {
             let taskSample = taskFixtures.create();
             chai.request(server)
                 .post('/api/v1/users/login')
@@ -75,7 +78,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should not create a new task due to missing task title', function() {
+        it('Should not create a new task due to missing task title', function () {
             let taskSample = taskFixtures.create();
             delete taskSample.title;
             chai.request(server)
@@ -97,7 +100,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should not create a new task due to missing task dueDate', function() {
+        it('Should not create a new task due to missing task dueDate', function () {
             let taskSample = taskFixtures.create();
             delete taskSample.dueDate;
             chai.request(server)
@@ -119,7 +122,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should not create a new task due to missing  task title and dueDate', function() {
+        it('Should not create a new task due to missing  task title and dueDate', function () {
             let taskSample = taskFixtures.create();
             delete taskSample.title;
             delete taskSample.dueDate;
@@ -142,4 +145,74 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
     })
+
+    context('GET /api/v1/tasks/view', () => {
+        it('Should show tasks for current user', function () {
+            chai.request(server)
+                .post('/api/v1/users/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    chai.request(server)
+                        .get('/api/v1/tasks/view')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', res.body.data.token)
+                        .end(function (err, res) {
+                            expect(res.status).to.equal(200);
+                            expect(res.body).to.be.an('object');
+                            expect(res.body).to.have.property('success');
+                            expect(res.body).to.have.property('data');
+                            let { success, data } = res.body;
+                            expect(success).to.eq(true);
+                        });
+                })
+        })
+
+        it('Should not show tasks for current user due to invalid token', function () {
+            chai.request(server)
+                .post('/api/v1/users/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    res.body.data.token = 'invalidtoken'
+                    chai.request(server)
+                        .get('/api/v1/tasks/view')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', res.body.data.token)
+                        .end(function (err, res) {
+                            expect(res.status).to.equal(401);
+                            let { success, data } = res.body;
+                            expect(success).to.eq(false);
+                        });
+                })
+        })
+    })
+
+    // context('POST /api/v1/tasks/edit', () => {
+    //     it('Should show tasks for current user', function () {
+    //         chai.request(server)
+    //             .post('/api/v1/users/login')
+    //             .set('Content-Type', 'application/json')
+    //             .send(JSON.stringify(userSample))
+    //             .end((err, res) => {
+    //                 let taskUpdate = {
+
+    //                 }
+    //                 chai.request(server)
+    //                     .put('/api/v1/tasks/edit')
+    //                     .set('Content-Type', 'application/json')
+    //                     .set('Authorization', res.body.data.token)
+    //                     .query('')
+    //                     .send(JSON.stringify(taskUpdate))
+    //                     .end(function (err, res) {
+    //                         expect(res.status).to.equal(200);
+    //                         expect(res.body).to.be.an('object');
+    //                         expect(res.body).to.have.property('success');
+    //                         expect(res.body).to.have.property('data');
+    //                         let { success, data } = res.body;
+    //                         expect(success).to.eq(true);
+    //                     });
+    //             })
+    //     })
+    // })
 })
