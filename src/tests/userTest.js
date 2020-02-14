@@ -32,7 +32,6 @@ describe('~USER API UNIT TESTING~', () => {
         User.deleteMany({}, function () { })
     })
 
-
     context('POST /api/v1/users', () => {
         it('Should create new user', function () {
         let data = {

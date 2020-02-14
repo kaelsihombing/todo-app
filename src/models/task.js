@@ -18,6 +18,7 @@ const taskSchema = new Schema({
     },
     importance: {
         type: String,
+        enum: ["Low", "Normal", "High"]
     },
     completion: {
         type: Boolean,
@@ -26,7 +27,7 @@ const taskSchema = new Schema({
     owner: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    },
+    }
 },
     {
         versionKey: false,
@@ -34,41 +35,39 @@ const taskSchema = new Schema({
     }
 );
 
-
 class Task extends mongoose.model('Task', taskSchema) {
-    static newTask({ title, dueDate, owner }) {
-        return new Promise ((resolve, reject) => {
-            this.create({
-                title, dueDate, owner
-            })
-            .then(data => {
-                resolve(data)
-            })
-            .catch(err => {
-                reject(err)
-            })
+    static newTask(params) {
+        return new Promise((resolve, reject) => {
+            this.create(params)
+                .then(data => {
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
         })
     }
 
     static findTask(owner) {
-        return new Promise ((resolve, reject) => {
-            this.find({owner: owner})
-            .then(data => {
-                resolve(data)
-            })
+        return new Promise((resolve, reject) => {
+            this.find({ owner: owner })
+                .then(data => {
+                    resolve(data)
+                })
         })
     }
 
-    static updateTask(_id, update) {
-        return new Promise ((resolve, reject) => {
-            this.findOneAndUpdate({_id: _id}, {update}, {new: true})
-            .then(data => {
-                console.log(data)
-                resolve(data)
-            })
-            .catch(err => {
-                reject(err)
-            })
+    static updateTask(id, params) {
+        return new Promise((resolve, reject) => {
+
+            this.findByIdAndUpdate(id, params, { new: true })
+                .then(data => {
+                    console.log(data)
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
         })
     }
 }

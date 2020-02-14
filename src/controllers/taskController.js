@@ -9,8 +9,16 @@ exports.createTask = async (req, res) => {
         let params = {
             title: req.body.title,
             dueDate: req.body.dueDate,
+            importanceLevel: req.body.importanceLevel,
             owner: req.user._id,
         }
+        if (params.importanceLevel === 1) {
+            params.importance = 'Low'
+        }
+        else if (params.importanceLevel === 3) {
+            params.importance = 'High'
+        }
+        else (params.importance = 'Normal')
 
         let result = await Task.newTask(params)
         success(res, result, 201)
@@ -34,8 +42,13 @@ exports.viewTask = async (req, res) => {
 
 exports.editTask = async (req, res) => {
     try {
-        let params = {};
-        for (let prop in req.body) if (req.body[prop]) params[prop] = req.body[prop];
+        let params = {
+            title: req.body.title,
+            dueDate: req.body.dueDate,
+            importanceLevel: req.body.importanceLevel,
+            completion: req.body.completion,
+        };
+        for (let prop in params) if (!params[prop]) delete params[prop];
         console.log(params);
 
         let result = await Task.updateTask(req.query.id, params)
