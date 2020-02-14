@@ -14,10 +14,11 @@ const userFixtures = require('../fixtures/userFixtures.js');
 const userSample = userFixtures.create();
 const taskFixtures = require('../fixtures/taskFixtures.js');
 
-describe('TASK API UNIT TESTING', () => {
+
+describe('TASK API UNIT TESTING', function() {
     before(function () {
-        Task.deleteMany({}, function () { });
-        User.deleteMany({}, function () { });
+        Task.deleteMany({}, function(){})
+        User.deleteMany({}, function(){})
         User.register({
             fullname: userSample.fullname,
             email: userSample.email,
@@ -26,12 +27,7 @@ describe('TASK API UNIT TESTING', () => {
         })
     })
 
-    after(function () {
-        Task.deleteMany({}, function () { });
-        User.deleteMany({}, function () { });
-    })
-
-    context('POST /api/v1/tasks/create', () => {
+    context('POST /api/v1/tasks/create', function() {
         it('Should create a new task for an authorized user', function () {
             let taskSample = taskFixtures.create();
             chai.request(server)
@@ -145,7 +141,7 @@ describe('TASK API UNIT TESTING', () => {
         })
     })
 
-    context('GET /api/v1/tasks/view', () => {
+    context('GET /api/v1/tasks/view', function() {
         it('Should show tasks for current user', function () {
             chai.request(server)
                 .post('/api/v1/auth/login')
@@ -157,7 +153,6 @@ describe('TASK API UNIT TESTING', () => {
                         .set('Content-Type', 'application/json')
                         .set('Authorization', res.body.data.token)
                         .end(function (err, res) {
-                            console.log(res.body)
                             expect(res.status).to.equal(200);
                             expect(res.body).to.be.an('object');
                             expect(res.body).to.have.property('success');
@@ -188,31 +183,37 @@ describe('TASK API UNIT TESTING', () => {
         })
     })
 
-    // context('PUT /api/v1/tasks/edit', () => {
-    //     it('Should update a selected task for current user', function () {
-    //         const taskSample = taskFixtures.create();
-    //         chai.request(server)
-    //             .post('/api/v1/auth/login')
-    //             .set('Content-Type', 'application/json')
-    //             .send(JSON.stringify(userSample))
-    //             .end((err, res) => {
-    //                 chai.request(server)
-    //                     .put('/api/v1/tasks/edit')
-    //                     .set('Content-Type', 'application/json')
-    //                     .set('Authorization', res.body.data.token)
-    //                     .query({id: })
-    //                     .send(JSON.stringify(taskSample))
-    //                     .end(function (err, res) {
-    //                         console.log(res.body)
-    //                         expect(res.status).to.equal(200);
-    //                         expect(res.body).to.be.an('object');
-    //                         expect(res.body).to.have.property('success');
-    //                         expect(res.body).to.have.property('data');
-    //                         let { success, data } = res.body;
-    //                         expect(success).to.eq(true);
-    //                     });
-                    
-    //             })
-    //     })
-    // })
+    context('PUT /api/v1/tasks/edit', function() {
+        it('Should update a selected task for current user', function () {
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    chai.request(server)
+                        .get('/api/v1/tasks/view')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', res.body.data.token)
+                        .end((err, res) => {
+                            let i = Math.floor(Math.random() * (res.body.data.length - 1));
+                            let taskSample = taskFixtures.create();
+                            chai.request(server)
+                                .put('/api/v1/tasks/edit')
+                                .set('Content-Type', 'application/json')
+                                .set('Authorization', token)
+                                .query({ id: res.body.data[i]._id })
+                                .send(JSON.stringify(taskSample))
+                                .end(function (err, res) {
+                                    expect(res.status).to.equal(201);
+                                    expect(res.body).to.be.an('object');
+                                    expect(res.body).to.have.property('success');
+                                    expect(res.body).to.have.property('data');
+                                    let { success, data } = res.body;
+                                    expect(success).to.eq(true);
+                                });
+                        })
+                })
+        })
+    })
 })

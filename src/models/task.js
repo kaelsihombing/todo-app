@@ -62,7 +62,6 @@ class Task extends mongoose.model('Task', taskSchema) {
 
             this.findByIdAndUpdate(id, params, { new: true })
                 .then(data => {
-                    console.log(data)
                     resolve(data)
                 })
                 .catch(err => {

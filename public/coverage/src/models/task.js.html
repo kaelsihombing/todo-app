@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.33% </span>
+                <span class="strong">93.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/15</span>
+                <span class='fraction'>14/15</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">63.64% </span>
+                <span class="strong">90.91% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/11</span>
+                <span class='fraction'>10/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.33% </span>
+                <span class="strong">93.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/15</span>
+                <span class='fraction'>14/15</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -130,8 +130,7 @@
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
 <a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -172,8 +171,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -184,19 +181,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -225,6 +223,7 @@ const taskSchema = new Schema({
     },
     importance: {
         type: String,
+        enum: ["Low", "Normal", "High"]
     },
     completion: {
         type: Boolean,
@@ -233,7 +232,7 @@ const taskSchema = new Schema({
     owner: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    },
+    }
 },
     {
         versionKey: false,
@@ -241,40 +240,38 @@ const taskSchema = new Schema({
     }
 );
 &nbsp;
-&nbsp;
 class Task extends mongoose.model('Task', taskSchema) {
-    static newTask({ title, dueDate, owner }) {
-        return new Promise ((resolve, reject) =&gt; {
-            this.create({
-                title, dueDate, owner
-            })
-            .then(data =&gt; {
-                resolve(data)
-            })
-            .catch(err =&gt; {
-                reject(err)
-            })
+    static newTask(params) {
+        return new Promise((resolve, reject) =&gt; {
+            this.create(params)
+                .then(data =&gt; {
+                    resolve(data)
+                })
+                .catch(err =&gt; {
+                    reject(err)
+                })
         })
     }
 &nbsp;
     static findTask(owner) {
-        return new Promise ((resolve, reject) =&gt; {
-            this.find({owner: owner})
-            .then(data =&gt; {
-                resolve(data)
-            })
+        return new Promise((resolve, reject) =&gt; {
+            this.find({ owner: owner })
+                .then(data =&gt; {
+                    resolve(data)
+                })
         })
     }
 &nbsp;
-<span class="fstat-no" title="function not covered" >    st</span>atic updateTask(id, {title, dueDate, importance, completion,}) {
-<span class="cstat-no" title="statement not covered" >        return new Promise (<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >            this.findByIdAndUpdate(id, {title, dueDate, importance, completion})</span>
-            .then(<span class="fstat-no" title="function not covered" >da</span>ta =&gt; {
-<span class="cstat-no" title="statement not covered" >                resolve(data)</span>
-            })
-            .catch(<span class="fstat-no" title="function not covered" >er</span>r =&gt; {
-<span class="cstat-no" title="statement not covered" >                reject(err)</span>
-            })
+    static updateTask(id, params) {
+        return new Promise((resolve, reject) =&gt; {
+&nbsp;
+            this.findByIdAndUpdate(id, params, { new: true })
+                .then(data =&gt; {
+                    resolve(data)
+                })
+                .catch(<span class="fstat-no" title="function not covered" >er</span>r =&gt; {
+<span class="cstat-no" title="statement not covered" >                    reject(err)</span>
+                })
         })
     }
 }
@@ -286,7 +283,7 @@ module.exports = Task;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Feb 14 2020 15:31:26 GMT+0700 (Western Indonesia Time)
+                at Fri Feb 14 2020 19:21:02 GMT+0700 (Western Indonesia Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>
