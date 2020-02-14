@@ -35,7 +35,7 @@ describe('~USER API UNIT TESTING~', () => {
     })
 
     //===================REGISTER====================
-    context('POST /api/v1/users, () => {
+    context('POST /api/v1/users', () => {
         it('Should create new user', function () {
             let data = {
                 ...user,
