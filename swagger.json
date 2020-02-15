@@ -388,7 +388,7 @@
             }
           },
           "401": {
-            "description": "Validation error due to invalid task id",
+            "description": "Validation error due to invalid token",
             "schema": {
               "type": "object",
               "properties": {
@@ -493,6 +493,93 @@
                 },
                 "error": {
                   "example": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/tasks/delete": {
+      "delete": {
+        "tags": [
+          "task collection"
+        ],
+        "summary": "Delete existing task",
+        "description": "ask authorized user for task ID to be deleted",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "put task's _id value in query parameter"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfuly updated task",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "example": "5e467bd899a0335d89b9fa40"
+                    },
+                    "title": {
+                      "example": "Go to Mandiri Bank"
+                    },
+                    "dueDate": {
+                      "example": "2020-03-31T00:00:00.000Z"
+                    },
+                    "importanceLevel": {
+                      "example": 3
+                    },
+                    "importance": {
+                      "example": "High"
+                    },
+                    "owner": {
+                      "example": "5e44ec2c7de7ba15424a83f8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Validation error due to invalid token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": "Invalid token"
                 }
               }
             }

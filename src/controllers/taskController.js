@@ -30,14 +30,8 @@ exports.createTask = async (req, res) => {
 }
 
 exports.viewTask = async (req, res) => {
-    try {
-        let result = await Task.findTask(req.user._id)
-        success(res, result, 200)
-    }
-
-    catch (err) {
-        error(res, err, 401)
-    }
+    let result = await Task.findTask(req.user._id)
+    success(res, result, 200)
 }
 
 exports.editTask = async (req, res) => {
@@ -63,6 +57,16 @@ exports.editTask = async (req, res) => {
         success(res, result, 201)
     }
 
+    catch (err) {
+        error(res, err, 422)
+    }
+}
+
+exports.deleteTask = async (req, res) => {
+    try {
+        let result = await Task.destroyTask(req.query.id)
+        success(res, result, 200)
+    }
     catch (err) {
         error(res, err, 422)
     }
