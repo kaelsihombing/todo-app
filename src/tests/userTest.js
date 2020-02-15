@@ -1,7 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const {
-    should,
     expect
 } = chai;
 
@@ -11,7 +10,6 @@ const server = require('../index');
 const Task = require('../models/task.js');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 const user = {
     fullname: 'Orang test',
@@ -22,9 +20,9 @@ const user = {
 
 
 
-describe('~USER API UNIT TESTING~', function() {
+describe('~USER API UNIT TESTING~', function () {
     before(function () {
-        User.deleteMany({}, function(){})
+        // User.deleteMany({}, function () { })
         User.create({
             ...user,
             encrypted_password: bcrypt.hashSync(user.password, 10),
@@ -32,12 +30,12 @@ describe('~USER API UNIT TESTING~', function() {
     })
 
     after(function () {
-        Task.deleteMany({}, function () { })
+        // Task.deleteMany({}, function () { })
         User.deleteMany({}, function () { })
     })
 
     //===================REGISTER====================
-    context('POST /api/v1/users', function() {
+    context('POST /api/v1/users', function () {
         it('Should create new user', function () {
             let data = {
                 ...user,
@@ -140,7 +138,7 @@ describe('~USER API UNIT TESTING~', function() {
         })
     })
 
-    context('POST /api/v1/auth/login', function() {
+    context('POST /api/v1/auth/login', function () {
         it('Should successfully logged in', function () {
             chai.request(server)
                 .post('/api/v1/auth/login')
@@ -210,29 +208,41 @@ describe('~USER API UNIT TESTING~', function() {
     })
 
     // context('POST /api/v1/users/update', () => {
-    //     it('Should successfully update user data', done => {
-    //         let data = {
-    //             ...user,
-    //             email: 'test04@mail.com'
+    //     it('Should successfully update user data', function () {
+    //         let user = {
+    //             email: 'test00@mail.com',
+    //             password: '123456',
     //         }
-    //             chai.request(server)
-    //                 .put('/api/v1/users/update')
-    //                 .set('Content-Type', 'application/json')
-    //                 .send(JSON.stringify(data))
-    //                 .end(function (err, res) {
-    //                     // console.log(res.body)
-    //                     expect(res.status).to.equal(201);
-    //                     // expect(res.body).to.be.an('object')
-    //                     // expect(res.body).to.have.property('success');
-    //                     // expect(res.body).to.have.property('data');
-    //                     // let { success, data } = res.body;
-    //                     // expect(success).to.eq(true);
-    //                     // expect(data).to.be.an('object');
-    //                     // expect(data).to.have.property('id')
-    //                     // expect(data).to.have.property('fullname')
-    //                     // expect(data).to.have.property('email')
-    //                     done();
-    //                 })
+    //         chai.request(server)
+    //             .post('/api/v1/auth/login')
+    //             .set('Content-Type', 'application/json')
+    //             .send(JSON.stringify(user))
+    //             .end((err, res) => {
+    //                 let update = {
+    //                     fullname: "mike sihombing",
+    //                     email: "testUpdate@gmail.com",
+    //                 }
+    //                 chai.request(server)
+    //                     .put('/api/v1/users')
+    //                     .type('form')
+    //                     .set('Content-Type', 'application/json')
+    //                     .set('Authorization', res.body.data.token)
+    //                     .send(JSON.stringify(update))
+    //                     .end(function (err, res) {
+    //                         console.log(res)
+    //                         expect(res.status).to.equal(201);
+    //                         // expect(res.body).to.be.an('object')
+    //                         // expect(res.body).to.have.property('success');
+    //                         // expect(res.body).to.have.property('data');
+    //                         // let { success, data } = res.body;
+    //                         // expect(success).to.eq(true);
+    //                         // expect(data).to.be.an('object');
+    //                         // expect(data).to.have.property('id')
+    //                         // expect(data).to.have.property('fullname')
+    //                         // expect(data).to.have.property('email')
+    //                     })
+
+    //             })
     //     })
     // })
 })

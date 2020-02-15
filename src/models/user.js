@@ -38,6 +38,7 @@ const userSchema = new Schema({
 class User extends mongoose.model('User', userSchema) {
     static register({ fullname, email, password, password_confirmation }) {
         return new Promise((resolve, reject) => {
+
             if (password !== password_confirmation) return reject('Password and Password Confirmation doesn\'t match')
 
             let encrypted_password = bcrypt.hashSync(password, 10)
@@ -54,8 +55,10 @@ class User extends mongoose.model('User', userSchema) {
                         token: token
                     })
                 })
-                .catch(err => {
-                    reject(err)
+                .catch(() => {
+                    reject({
+                        message: "Please fill the form"
+                    })
                 })
         })
     }
