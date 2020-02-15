@@ -36,7 +36,7 @@ exports.viewTask = async (req, res) => {
     }
 
     catch (err) {
-        error(res, err, 422)
+        error(res, err, 401)
     }
 }
 

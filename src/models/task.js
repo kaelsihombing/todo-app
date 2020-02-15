@@ -13,7 +13,7 @@ const taskSchema = new Schema({
     },
     importanceLevel: {
         type: Number,
-        enum: [1, 2, 3], // 1=Low, 2=Normal, 3=High
+        enum: [1, 2, 3], // 1=Low, 2=Normal, 3=High, if FE can convert to String, delete this.
         default: 2
     },
     importance: {
