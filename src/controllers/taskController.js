@@ -12,13 +12,15 @@ exports.createTask = async (req, res) => {
             importanceLevel: req.body.importanceLevel,
             owner: req.user._id,
         }
-        if (params.importanceLevel === 1) {
-            params.importance = 'Low'
-        }
-        else if (params.importanceLevel === 3) {
-            params.importance = 'High'
-        }
-        else (params.importance = 'Normal')
+        // if (params.importanceLevel === 1) {
+        //     params.importance = 'Low'
+        // }
+        // if (params.importanceLevel === 2) {
+        //     params.importance = 'Normal'
+        // }
+        // if (params.importanceLevel === 3) {
+        //     params.importance = 'High'
+        // }
 
         let result = await Task.newTask(params)
         success(res, result, 201)
@@ -43,20 +45,11 @@ exports.editTask = async (req, res) => {
             completion: req.body.completion,
         }
 
-        if (params.importanceLevel === 1) {
-            params.importance = 'Low'
-        }
-        else if (params.importanceLevel === 3) {
-            params.importance = 'High'
-        }
-        else (params.importance = 'Normal')
-
         for (let prop in params) if (!params[prop]) delete params[prop];
 
         let result = await Task.updateTask(req.query.id, params)
         success(res, result, 201)
     }
-
     catch (err) {
         error(res, err, 422)
     }
