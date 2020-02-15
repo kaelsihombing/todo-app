@@ -156,7 +156,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
     "/auth/login": {
