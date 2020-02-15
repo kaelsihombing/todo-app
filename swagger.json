@@ -1,150 +1,153 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "description": "This is an API Documentation for awesome-project.",
-      "version": "1.0.0",
-      "title": "awesome-project-glints",
-      "contact": {
-        "email": "sntmcl1@gmail.com"
-      }
+  "swagger": "2.0",
+  "info": {
+    "description": "This is an API Documentation for awesome-project.",
+    "version": "1.0.0",
+    "title": "awesome-project-glints",
+    "contact": {
+      "email": "sntmcl1@gmail.com"
+    }
+  },
+  "host": "awesome-project-glints.herokuapp.com",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "user collection",
+      "description": "Info for User API"
     },
-    "host": "awesome-project-glints.herokuapp.com",
-    "basePath": "/api/v1",
-    "tags": [
-      {
-        "name": "user collection",
-        "description": "Info for User API"
-      }
-    ],
-    "paths": {
-      "/users": {
-        "post": {
-          "tags": [
-            "user collection"
-          ],
-          "summary": "Register new user",
-          "description": "ask user for email, password, and password confirmation",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/UsersRegisterRequest"
-              }
+    {
+      "name": "task collection",
+      "description": "Info for Task API"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "Register new user",
+        "description": "ask user for email, password, and password confirmation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UsersRegisterRequest"
             }
-          ],
-          "responses": {
-            "201": {
-              "description": "Successfuly logged in",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": {
-                    "type": "boolean",
-                    "example": true
-                  },
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "example": "5e467d3a15425d00171a4cac"
-                      },
-                      "fullname": {
-                        "example": "santo michael sihombing"
-                      },
-                      "email": {
-                        "example": "sntmcl@gmail.com"
-                      },
-                      "token": {
-                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
-                      }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfuly logged in",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "example": "5e467d3a15425d00171a4cac"
+                    },
+                    "fullname": {
+                      "example": "santo michael sihombing"
+                    },
+                    "email": {
+                      "example": "sntmcl@gmail.com"
+                    },
+                    "token": {
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
                     }
                   }
                 }
               }
-            },
-            "422": {
-              "description": "Your credentials is not valid",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": {
-                    "type": "boolean",
-                    "example": false
-                  },
-                  "error": {
-                    "example": "Password and Password Confirmation doesn't match"
-                  }
+            }
+          },
+          "422": {
+            "description": "Your credentials is not valid",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": "Password and Password Confirmation doesn't match"
                 }
               }
             }
           }
-        },
-        "put": {
-          "tags": [
-            "user collection"
-          ],
-          "summary": "Update user data",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/UsersUpdateDataRequest"
-              }
+        }
+      },
+      "put": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "Update user data",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UsersUpdateDataRequest"
             }
-          ],
-          "responses": {
-            "201": {
-              "description": "Successfuly updated user data",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": {
-                    "type": "boolean",
-                    "example": true
-                  },
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "data": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "example": "5e467d3a15425d00171a4cac"
-                          },
-                          "fullname": {
-                            "example": "Mike glints 2"
-                          },
-                          "email": {
-                            "example": "mike-glints-2@gmail.com"
-                          },
-                          "encrypted_password": {
-                            "example": "$2a$10$7N/PRRRc/QKkOSTvv0lzSu1Ukwix.eqZ1HAlEIDhryEsUdXujAOOm"
-                          },
-                          "createdAt": {
-                            "example": "2020-02-14T10:58:02.823Z"
-                          },
-                          "updateddAt": {
-                            "example": "2020-02-14T12:04:54.909Z"
-                          },
-                          "image": {
-                            "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1581681892861_ca8TkZjDP"
-                          }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfuly updated user data",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "example": "5e467d3a15425d00171a4cac"
+                        },
+                        "fullname": {
+                          "example": "Mike glints 2"
+                        },
+                        "email": {
+                          "example": "mike-glints-2@gmail.com"
+                        },
+                        "encrypted_password": {
+                          "example": "$2a$10$7N/PRRRc/QKkOSTvv0lzSu1Ukwix.eqZ1HAlEIDhryEsUdXujAOOm"
+                        },
+                        "createdAt": {
+                          "example": "2020-02-14T10:58:02.823Z"
+                        },
+                        "updateddAt": {
+                          "example": "2020-02-14T12:04:54.909Z"
+                        },
+                        "image": {
+                          "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1581681892861_ca8TkZjDP"
                         }
                       }
                     }
@@ -154,73 +157,73 @@
             }
           }
         }
-      },
-      "/auth/login": {
-        "post": {
-          "tags": [
-            "user collection"
-          ],
-          "summary": "generate token for user",
-          "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "body",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/UsersLoginRequest"
-              }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "generate token for user",
+        "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UsersLoginRequest"
             }
-          ],
-          "responses": {
-            "200": {
-              "description": "Successfuly logged in",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": {
-                    "type": "boolean",
-                    "example": true
-                  },
-                  "data": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "example": "5e467d3a15425d00171a4cac"
-                      },
-                      "fullname": {
-                        "example": "santo michael sihombing"
-                      },
-                      "email": {
-                        "example": "sntmcl@gmail.com"
-                      },
-                      "token": {
-                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
-                      }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfuly logged in",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "example": "5e467d3a15425d00171a4cac"
+                    },
+                    "fullname": {
+                      "example": "santo michael sihombing"
+                    },
+                    "email": {
+                      "example": "sntmcl@gmail.com"
+                    },
+                    "token": {
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
                     }
                   }
                 }
               }
-            },
-            "422": {
-              "description": "Not successfully login",
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "success": {
-                    "type": "boolean",
-                    "example": false
-                  },
-                  "data": {
-                    "type": "string",
-                    "example": "Password is wrong"
-                  }
+            }
+          },
+          "422": {
+            "description": "Not successfully login",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "data": {
+                  "type": "string",
+                  "example": "Password is wrong"
                 }
               }
             }
@@ -228,78 +231,399 @@
         }
       }
     },
-    "securityDefinitions": {
-      "Authorization": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header"
+    "/tasks/create": {
+      "post": {
+        "tags": [
+          "task collection"
+        ],
+        "summary": "Create new task",
+        "description": "ask authorized user for task title and dueDate",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TaskCreateRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfuly created new task",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "example": "5e467bd899a0335d89b9fa40"
+                    },
+                    "title": {
+                      "example": "Go to bank"
+                    },
+                    "dueDate": {
+                      "example": "2020-02-29T00:00:00.000Z"
+                    },
+                    "importanceLevel": {
+                      "example": 1
+                    },
+                    "importance": {
+                      "example": "Low"
+                    },
+                    "owner": {
+                      "example": "5e44ec2c7de7ba15424a83f8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error due to missing parameter(s)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
-    "definitions": {
-      "UsersRegisterRequest": {
-        "type": "object",
-        "required": [
-          "fullname",
-          "email",
-          "password",
-          "password_confirmation"
+    "/tasks/view": {
+      "get": {
+        "tags": [
+          "task collection"
         ],
-        "properties": {
-          "fullname": {
-            "type": "string",
-            "example": "santo michael sihombing"
-          },
-          "email": {
-            "type": "string",
-            "example": "sntmcl@gmail.com"
-          },
-          "password": {
-            "type": "string",
-            "example": "sntmcl1"
-          },
-          "password_confirmation": {
-            "type": "string",
-            "example": "sntmcl1"
-          }
-        }
-      },
-      "UsersUpdateDataRequest": {
-        "type": "object",
-        "properties": {
-          "fullname": {
-            "type": "string",
-            "example": "Mike glints 2"
-          },
-          "email": {
-            "type": "string",
-            "example": "mike-glints-2@gmail.com"
-          },
-          "image": {
-            "type": "string",
-            "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1581681892861_ca8TkZjDP"
-          }
-        }
-      },
-      "UsersLoginRequest": {
-        "type": "object",
-        "required": [
-          "email",
-          "password"
+        "summary": "Create new task",
+        "description": "ask user to login before showing user's task",
+        "consumes": [
+          "application/json"
         ],
-        "properties": {
-          "email": {
-            "type": "string",
-            "example": "sntmcl@gmail.com"
-          },
-          "password": {
-            "type": "string",
-            "example": "sntmcl1"
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string"
           }
-        }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully show user's task(s)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "example": "5e467bd899a0335d89b9fa40"
+                    },
+                    "title": {
+                      "example": "Go to bank"
+                    },
+                    "dueDate": {
+                      "example": "2020-02-29T00:00:00.000Z"
+                    },
+                    "importanceLevel": {
+                      "example": 1
+                    },
+                    "importance": {
+                      "example": "Low"
+                    },
+                    "owner": {
+                      "example": "5e44ec2c7de7ba15424a83f8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Validation error due to invalid task id",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": "Invalid token"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
       }
     },
-    "externalDocs": {
-      "description": "Back-End Repository",
-      "url": "https://gitlab.com/kaelsihombing/our-awesome-to-do-app"
+    "/tasks/edit": {
+      "put": {
+        "tags": [
+          "task collection"
+        ],
+        "summary": "Edit existing task",
+        "description": "ask authorized user for task ID and desired updated parameters",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": "put task's _id value in query parameter"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TaskEditRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successfuly updated task",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "example": "5e467bd899a0335d89b9fa40"
+                    },
+                    "title": {
+                      "example": "Go to Mandiri Bank"
+                    },
+                    "dueDate": {
+                      "example": "2020-03-31T00:00:00.000Z"
+                    },
+                    "importanceLevel": {
+                      "example": 3
+                    },
+                    "importance": {
+                      "example": "High"
+                    },
+                    "owner": {
+                      "example": "5e44ec2c7de7ba15424a83f8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error due invalid task id",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
     }
+  },
+  "securityDefinitions": {
+    "Authorization": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "UsersRegisterRequest": {
+      "type": "object",
+      "required": [
+        "fullname",
+        "email",
+        "password",
+        "password_confirmation"
+      ],
+      "properties": {
+        "fullname": {
+          "type": "string",
+          "example": "santo michael sihombing"
+        },
+        "email": {
+          "type": "string",
+          "example": "sntmcl@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "sntmcl1"
+        },
+        "password_confirmation": {
+          "type": "string",
+          "example": "sntmcl1"
+        }
+      }
+    },
+    "UsersUpdateDataRequest": {
+      "type": "object",
+      "properties": {
+        "fullname": {
+          "type": "string",
+          "example": "Mike glints 2"
+        },
+        "email": {
+          "type": "string",
+          "example": "mike-glints-2@gmail.com"
+        },
+        "image": {
+          "type": "string",
+          "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1581681892861_ca8TkZjDP"
+        }
+      }
+    },
+    "UsersLoginRequest": {
+      "type": "object",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "sntmcl@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "sntmcl1"
+        }
+      }
+    },
+    "TaskCreateRequest": {
+      "type": "object",
+      "required": [
+        "title",
+        "dueDate"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Go to bank"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date",
+          "example": "2020-02-29",
+          "description": "Min value for date is set to current date and time -> Date.now()"
+        },
+        "importanceLevel": {
+          "type": "number",
+          "enum": [
+            1,
+            2,
+            3
+          ],
+          "default": 2,
+          "example": 1
+        }
+      }
+    },
+    "TaskEditRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Go to Mandiri Bank"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date",
+          "example": "2020-03-01"
+        },
+        "importanceLevel": {
+          "type": "number",
+          "enum": [
+            1,
+            2,
+            3
+          ],
+          "example": 3
+        },
+        "completion": {
+          "type": "boolean",
+          "example": true
+        }
+      },
+      "description": "every parameter is optional, only passed parameter will be updated in database"
+    }
+  },
+  "externalDocs": {
+    "description": "Back-End Repository",
+    "url": "https://gitlab.com/kaelsihombing/our-awesome-to-do-app"
   }
+}
