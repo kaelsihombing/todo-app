@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const Schema = mongoose.Schema;
 
 const taskSchema = new Schema({
@@ -16,10 +17,6 @@ const taskSchema = new Schema({
         enum: [1, 2, 3], // 1=Low, 2=Normal, 3=High, if FE can convert to String, delete this.
         default: 2
     },
-    // importance: {
-    //     type: String,
-    //     enum: ["Low", "Normal", "High"]
-    // },
     completion: {
         type: Boolean,
         default: false,
@@ -35,9 +32,17 @@ const taskSchema = new Schema({
     }
 );
 
+taskSchema.plugin(mongoosePaginate)
+
 class Task extends mongoose.model('Task', taskSchema) {
-    static newTask(params) {
+    static newTask(bodyParams, owner) {
         return new Promise((resolve, reject) => {
+            let params = {
+                title: bodyParams.title,
+                dueDate: bodyParams.dueDate,
+                importanceLevel: bodyParams.importanceLevel,
+                owner: owner,
+            }
             this.create(params)
                 .then(data => {
                     resolve(data)
@@ -48,30 +53,82 @@ class Task extends mongoose.model('Task', taskSchema) {
         })
     }
 
-    static findTask(owner) {
-        return new Promise((resolve, reject) => {
-            this.find({ owner: owner })
+    static findTask(owner, page) {
+        return new Promise((resolve) => {
+            let options = {
+                page: page,
+                limit: 10,
+                collation: {locale: 'en'}
+            };
+            this.paginate({ owner: owner }, options)       
                 .then(data => {
                     resolve(data)
                 })
         })
     }
 
-    static updateTask(id, params) {
+    static findAllTask(owner) {
+        return new Promise((resolve) => {
+            this.find({ owner: owner })       
+                .then(data => {
+                    resolve(data)
+                })
+        })
+    }
+
+    static sortTaskByParams(owner, bodyParams, page) {
         return new Promise((resolve, reject) => {
+            let options = {
+                page: page,
+                limit: 10,
+                sort: bodyParams.params,
+                collation: {locale: 'en'}
+            };
+            this.paginate({ owner: owner }, options)
+                .then(data => {
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    static filterTaskByParams(owner, bodyParams, page) {
+        return new Promise((resolve, reject) => {
+            let options = {
+                page: page,
+                limit: 10,
+                collation: {locale: 'en'}
+            };
+            let params = {
+                owner: owner,
+                importanceLevel: bodyParams.importanceLevel,
+                completion: bodyParams.completion,
+            }
+            for (let prop in params) if (!params[prop]) delete params[prop];
+            this.paginate(params, options)
+                .then(data => {
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    static updateTask(id, bodyParams) {
+        return new Promise((resolve, reject) => {
+            let params = {
+                title: bodyParams.title,
+                dueDate: bodyParams.dueDate,
+                importanceLevel: bodyParams.importanceLevel,
+                completion: bodyParams.completion,
+            }
+            for (let prop in params) if (!params[prop]) delete params[prop];
+
             this.findByIdAndUpdate(id, params, { new: true })
                 .then(data => {
-                    // switch (data.importanceLevel) {
-                    //     case 1:
-                    //         data.importance = 'Low'
-                    //         break;
-                    //     case 2:
-                    //         data.importance = 'Normal'
-                    //         break;
-                    //     case 3:
-                    //         data.importance = 'High'
-                    //         break;
-                    // }
                     resolve(data)
                 })
                 .catch(err => {
@@ -83,8 +140,8 @@ class Task extends mongoose.model('Task', taskSchema) {
     static destroyTask(id) {
         return new Promise((resolve, reject) => {
             this.findByIdAndDelete(id)
-                .then(() => {
-                    resolve("Task deleted successfully!")
+                .then(data => {
+                    resolve(`Task ${data.title} successfully deleted!`)
                 })
                 .catch(err => {
                     reject(err)

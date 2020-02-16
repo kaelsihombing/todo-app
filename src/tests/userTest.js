@@ -18,11 +18,16 @@ const user = {
     password_confirmation: '123456'
 }
 
+<<<<<<< HEAD
 
 
 describe('~USER API UNIT TESTING~', function () {
     before(function () {
         // User.deleteMany({}, function () { })
+=======
+describe('~USER API UNIT TESTING~', function() {
+    before(function () {
+>>>>>>> 3b18171c8fdc0f3ddf25b2e9f07906fbd474bf10
         User.create({
             ...user,
             encrypted_password: bcrypt.hashSync(user.password, 10),
@@ -47,7 +52,7 @@ describe('~USER API UNIT TESTING~', function () {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
-                    // console.log(res.body)
+                    //console.log(res.body)
                     expect(res.status).to.equal(201);
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');

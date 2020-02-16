@@ -86,78 +86,142 @@ class User extends mongoose.model('User', userSchema) {
     }
 
 
-    static updateData(id, data, buffer) {
+    // static updateData(id, data, buffer) {
+    //     return new Promise((resolve, reject) => {
+    //         if (buffer !== undefined) {
+    //             imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
+    //                 .then(url => {
+    //                     this.findOne({ _id: id }, function (err, foundData) {
+    //                         if (err) {
+    //                             reject(err)
+    //                         } else {
+    //                             if (!foundData) {
+    //                                 reject(err)
+    //                             } else {
+    //                                 if (data.fullname) {
+    //                                     foundData.fullname = data.fullname;
+    //                                 }
+
+    //                                 if (data.email) {
+    //                                     foundData.email = data.email;
+    //                                 }
+
+    //                                 if (buffer) {
+    //                                     foundData.image = url.url
+    //                                 }
+
+    //                                 foundData.save(function (err, foundData) {
+    //                                     if (err) {
+    //                                         reject(err)
+    //                                     } else {
+    //                                         resolve({
+    //                                             data: foundData
+    //                                         })
+    //                                     }
+    //                                 })
+    //                             }
+    //                         }
+
+    //                     })
+    //                 })
+    //         } else {
+    //             this.findOne({ _id: id }, function (err, foundData) {
+    //                 if (err) {
+    //                     reject(err)
+    //                 } else {
+    //                     if (!foundData) {
+    //                         reject(err)
+    //                     } else {
+    //                         if (data.fullname) {
+    //                             foundData.fullname = data.fullname;
+    //                         }
+
+    //                         if (data.email) {
+    //                             foundData.email = data.email;
+    //                         }
+
+    //                         foundData.save(function (err, foundData) {
+    //                             if (err) {
+    //                                 reject(err)
+    //                             } else {
+    //                                 resolve({
+    //                                     data: foundData
+    //                                 })
+    //                             }
+    //                         })
+    //                     }
+    //                 }
+
+    //             })
+    //         }
+    //     })
+
+    // }
+
+    // static updateData(id, req) {
+    //     return new Promise((resolve, reject) => {
+    //         if (req.file !== undefined) {
+    //             imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
+    //                 .then(url => {
+    //                     let params = {
+    //                         fullname: req.body.fullname,
+    //                         email: req.body.email,
+    //                         image: url.url
+    //                     }
+    //                     for (let prop in params) if (!params[prop]) delete params[prop];
+    //                     this.findByIdAndUpdate(id, params, { new: true })
+    //                         .then(data => {
+    //                             resolve(data)
+    //                         })
+    //                         .catch(err => {
+    //                             reject(err)
+    //                         })
+    //                 })
+    //         } else {
+    //             let params = {
+    //                 fullname: req.body.fullname,
+    //                 email: req.body.email,
+    //             }
+    //             for (let prop in params) if (!params[prop]) delete params[prop];
+    //             this.findByIdAndUpdate(id, params, { new: true })
+    //                 .then(data => {
+    //                     resolve(data)
+    //                 })
+    //                 .catch(err => {
+    //                     reject(err)
+    //                 })
+    //         }
+    //     })
+
+    // }
+
+
+
+
+    static async updateData(id, req) {
+        let params = {
+            fullname: req.body.fullname,
+            email: req.body.email
+        }
+
+        for (let prop in params) if (!params[prop]) delete params[prop];
+        
+        if (req.file) {
+            let url = await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
+            params.image = url.url
+        }
+        
         return new Promise((resolve, reject) => {
-            if (buffer !== undefined) {
-                imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
-                    .then(url => {
-                        this.findOne({ _id: id }, function (err, foundData) {
-                            if (err) {
-                                reject(err)
-                            } else {
-                                if (!foundData) {
-                                    reject(err)
-                                } else {
-                                    if (data.fullname) {
-                                        foundData.fullname = data.fullname;
-                                    }
-
-                                    if (data.email) {
-                                        foundData.email = data.email;
-                                    }
-
-                                    if (buffer) {
-                                        foundData.image = url.url
-                                    }
-
-                                    foundData.save(function (err, foundData) {
-                                        if (err) {
-                                            reject(err)
-                                        } else {
-                                            resolve({
-                                                data: foundData
-                                            })
-                                        }
-                                    })
-                                }
-                            }
-
-                        })
-                    })
-            } else {
-                this.findOne({ _id: id }, function (err, foundData) {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        if (!foundData) {
-                            reject(err)
-                        } else {
-                            if (data.fullname) {
-                                foundData.fullname = data.fullname;
-                            }
-
-                            if (data.email) {
-                                foundData.email = data.email;
-                            }
-
-                            foundData.save(function (err, foundData) {
-                                if (err) {
-                                    reject(err)
-                                } else {
-                                    resolve({
-                                        data: foundData
-                                    })
-                                }
-                            })
-                        }
-                    }
-
+            this.findByIdAndUpdate(id, params, { new: true })
+                .then(data => {
+                    resolve(data)
                 })
-            }
+                .catch(err => {
+                    reject(err)
+                })
         })
 
     }
-
 
     // static updateData(id, data, image) {
     //     return new Promise((resolve, reject) => {
