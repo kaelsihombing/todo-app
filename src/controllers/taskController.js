@@ -15,7 +15,7 @@ exports.createTask = async (req, res) => {
 }
 
 exports.viewTask = async (req, res) => {
-    let result = await Task.findTask(req.user._id, req.query.page)
+    let result = await Task.findTask(req.user._id, req.params.page)
     success(res, result, 200)
 }
 
@@ -26,7 +26,7 @@ exports.viewAllTask = async (req, res) => {
 
 exports.sortTask = async (req, res) => {
     try {
-        let result = await Task.sortTaskByParams(req.user._id, req.body, req.query.page)
+        let result = await Task.sortTaskByParams(req.user._id, req.body, req.params.page)
         success(res, result, 200)
     }
     catch (err) {
@@ -36,7 +36,7 @@ exports.sortTask = async (req, res) => {
 
 exports.filterTask = async (req, res) => {
     try{
-        let result = await Task.filterTaskByParams(req.user._id, req.body, req.query.page)
+        let result = await Task.filterTaskByParams(req.user._id, req.body, req.params.page)
         success(res, result, 200)
     }
     catch (err) {
@@ -46,7 +46,7 @@ exports.filterTask = async (req, res) => {
 
 exports.editTask = async (req, res) => {
     try {
-        let result = await Task.updateTask(req.query.id, req.body)
+        let result = await Task.updateTask(req.params._id, req.body)
         success(res, result, 201)
     }
     catch (err) {
@@ -56,7 +56,7 @@ exports.editTask = async (req, res) => {
 
 exports.deleteTask = async (req, res) => {
     try {
-        let result = await Task.destroyTask(req.query.id)
+        let result = await Task.destroyTask(req.params._id)
         success(res, result, 200)
     }
     catch (err) {

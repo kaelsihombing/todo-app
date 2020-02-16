@@ -22,7 +22,7 @@ describe('TASK API UNIT TESTING', () => {
     })
 
     after(() => {
-        User.deleteMany({}, function(){})
+        User.deleteMany({}, function () { })
     })
 
     context('POST /api/v1/tasks/create', () => {
@@ -103,9 +103,8 @@ describe('TASK API UNIT TESTING', () => {
                 .send(JSON.stringify(userSample))
                 .end((err, res) => {
                     chai.request(server)
-                        .get('/api/v1/tasks/view')
+                        .get('/api/v1/tasks/view/1')
                         .set('Authorization', res.body.data.token)
-                        .query({page: 1})
                         .end((err, res) => {
                             expect(res.status).to.equal(200);
                             expect(res.body).to.be.an('object');
@@ -125,9 +124,8 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     res.body.data.token = 'invalidToken'
                     chai.request(server)
-                        .get('/api/v1/tasks/view')
+                        .get('/api/v1/tasks/view/1')
                         .set('Authorization', res.body.data.token)
-                        .query({page: 1})
                         .end((err, res) => {
                             expect(res.status).to.equal(401);
                             let { success, data } = res.body;
@@ -146,18 +144,19 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/view/all')
+                        .get('/api/v1/tasks/viewall')
                         .set('Authorization', res.body.data.token)
                         .end((err, res) => {
+                            console.log(res.body)
                             let i = Math.floor(Math.random() * (res.body.data.length - 1))
                             let taskSample = taskFixtures.create()
                             chai.request(server)
-                                .put('/api/v1/tasks/edit')
+                                .put(`/api/v1/tasks/edit/${res.body.data[i]._id}`)
                                 .set('Content-Type', 'application/json')
                                 .set('Authorization', token)
-                                .query({ id: res.body.data[i]._id })
                                 .send(JSON.stringify(taskSample))
                                 .end((err, res) => {
+                                    console.log(res.body)
                                     expect(res.status).to.equal(201);
                                     expect(res.body).to.be.an('object');
                                     expect(res.body).to.have.property('success');
@@ -177,15 +176,15 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/view/all')
+                        .get('/api/v1/tasks/viewall')
                         .set('Authorization', res.body.data.token)
                         .end((err, res) => {
                             let taskSample = taskFixtures.create()
                             chai.request(server)
-                                .put('/api/v1/tasks/edit')
+                                .put(`/api/v1/tasks/edit/randomId`)
                                 .set('Content-Type', 'application/json')
                                 .set('Authorization', token)
-                                .query({ id: 'randomId' })
+                                // .query({ id: 'randomId' })
                                 .send(JSON.stringify(taskSample))
                                 .end((err, res) => {
                                     expect(res.status).to.equal(422);
@@ -207,14 +206,14 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/view/all')
+                        .get('/api/v1/tasks/viewall')
                         .set('Authorization', res.body.data.token)
                         .end((err, res) => {
                             let i = Math.floor(Math.random() * (res.body.data.length - 1));
                             chai.request(server)
-                                .delete('/api/v1/tasks/delete')
+                                .delete(`/api/v1/tasks/delete/${res.body.data[i]._id}`)
                                 .set('Authorization', token)
-                                .query({ id: res.body.data[i]._id })
+                                // .query({ id: res.body.data[i]._id })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
@@ -235,13 +234,13 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/view/all')
+                        .get('/api/v1/tasks/viewall')
                         .set('Authorization', res.body.data.token)
                         .end((err, res) => {
                             chai.request(server)
-                                .delete('/api/v1/tasks/delete')
+                                .delete(`/api/v1/tasks/delete/randomId`)
                                 .set('Authorization', token)
-                                .query({ id: 'randomId'})
+                                // .query({ id: 'randomId' })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
