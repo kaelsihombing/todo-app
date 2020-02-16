@@ -144,7 +144,7 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/viewall')
+                        .get('/api/v1/tasks')
                         .set('Authorization', res.body.data.token)
                         .end((err, res) => {
                             console.log(res.body)
@@ -176,7 +176,7 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/viewall')
+                        .get('/api/v1/tasks')
                         .set('Authorization', res.body.data.token)
                         .end((err, res) => {
                             let taskSample = taskFixtures.create()
@@ -206,7 +206,7 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/viewall')
+                        .get('/api/v1/tasks')
                         .set('Authorization', res.body.data.token)
                         .end((err, res) => {
                             let i = Math.floor(Math.random() * (res.body.data.length - 1));
@@ -234,7 +234,7 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/viewall')
+                        .get('/api/v1/tasks')
                         .set('Authorization', res.body.data.token)
                         .end((err, res) => {
                             chai.request(server)
