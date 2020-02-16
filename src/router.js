@@ -14,6 +14,9 @@ router.post('/auth/login', user.login)
 //=============TASK-ROUTER
 router.post('/tasks/create', authenticate, task.createTask);
 router.get('/tasks/view', authenticate, task.viewTask);
+router.get('/tasks/view/all', authenticate, task.viewAllTask);
+router.get('/tasks/filter', authenticate, task.filterTask);
+router.get('/tasks/sort', authenticate, task.sortTask);
 router.put('/tasks/edit', authenticate, task.editTask);
 router.delete('/tasks/delete', authenticate, task.deleteTask);
 
