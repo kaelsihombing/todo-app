@@ -6,18 +6,20 @@ const task = require('./controllers/taskController')
 const authenticate = require('./middlewares/authenticate')
 const multer = require('./middlewares/multer')
 
+const validateForm = require('./middlewares/validateForm')
+
 //=============USER-ROUTER
-router.post('/users', user.create)
+router.post('/users', validateForm, user.create)
 router.put('/users', multer, authenticate, user.updateData)
 router.post('/auth/login', user.login)
 
 //=============TASK-ROUTER
 router.post('/tasks/create', authenticate, task.createTask);
-router.get('/tasks/view', authenticate, task.viewTask);
-router.get('/tasks/view/all', authenticate, task.viewAllTask);
-router.get('/tasks/filter', authenticate, task.filterTask);
-router.get('/tasks/sort', authenticate, task.sortTask);
-router.put('/tasks/edit', authenticate, task.editTask);
-router.delete('/tasks/delete', authenticate, task.deleteTask);
+router.get('/tasks/view/:page', authenticate, task.viewTask);
+router.get('/tasks/viewall', authenticate, task.viewAllTask);
+router.get('/tasks/filter/:page', authenticate, task.filterTask);
+router.get('/tasks/sort/:page', authenticate, task.sortTask);
+router.put('/tasks/edit/:id', authenticate, task.editTask);
+router.delete('/tasks/delete/:_id', authenticate, task.deleteTask);
 
 module.exports = router;

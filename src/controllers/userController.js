@@ -4,6 +4,7 @@ const {
     error,
 } = require('../helpers/response')
 
+
 exports.create = async (req, res) => {
     try {
         let result = await User.register(req.body)

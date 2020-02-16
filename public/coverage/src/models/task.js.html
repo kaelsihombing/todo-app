@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.18% </span>
+                <span class="strong">68.09% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>30/44</span>
+                <span class='fraction'>32/47</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>3/6</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">71.43% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>28/40</span>
+                <span class='fraction'>30/42</span>
             </div>
         
             
@@ -209,7 +209,9 @@
 <a name='L150'></a><a href='#L150'>150</a>
 <a name='L151'></a><a href='#L151'>151</a>
 <a name='L152'></a><a href='#L152'>152</a>
-<a name='L153'></a><a href='#L153'>153</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -337,6 +339,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -377,7 +381,7 @@ const taskSchema = new Schema({
     },
     importanceLevel: {
         type: Number,
-        enum: [1, 2, 3], // 1=Low, 2=Normal, 3=High, if FE can convert to String, delete this.
+        enum: [1, 2, 3], // 1=Low, 2=Normal, 3=High
         default: 2
     },
     completion: {
@@ -421,9 +425,9 @@ class Task extends mongoose.model('Task', taskSchema) {
             let options = {
                 page: page,
                 limit: 10,
-                collation: {locale: 'en'}
+                collation: { locale: 'en' }
             };
-            this.paginate({ owner: owner }, options)       
+            this.paginate({ owner: owner }, options)
                 .then(data =&gt; {
                     resolve(data)
                 })
@@ -432,7 +436,7 @@ class Task extends mongoose.model('Task', taskSchema) {
 &nbsp;
     static findAllTask(owner) {
         return new Promise((resolve) =&gt; {
-            this.find({ owner: owner })       
+            this.find({ owner: owner })
                 .then(data =&gt; {
                     resolve(data)
                 })
@@ -445,7 +449,7 @@ class Task extends mongoose.model('Task', taskSchema) {
                 page: page,
                 limit: 10,
                 sort: bodyParams.params,
-                collation: {locale: 'en'}
+                collation: { locale: 'en' }
             };
 <span class="cstat-no" title="statement not covered" >            this.paginate({ owner: owner }, options)</span>
                 .then(<span class="fstat-no" title="function not covered" >da</span>ta =&gt; {
@@ -462,7 +466,7 @@ class Task extends mongoose.model('Task', taskSchema) {
             let options = <span class="cstat-no" title="statement not covered" >{</span>
                 page: page,
                 limit: 10,
-                collation: {locale: 'en'}
+                collation: { locale: 'en' }
             };
             let params = <span class="cstat-no" title="statement not covered" >{</span>
                 owner: owner,
@@ -489,14 +493,16 @@ class Task extends mongoose.model('Task', taskSchema) {
                 completion: bodyParams.completion,
             }
             for (let prop in params) if (!params[prop]) delete params[prop];
+            let isDateValid = (Date.parse(params.dueDate) &gt;= Date.now())
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (!isDateValid) <span class="cstat-no" title="statement not covered" >reject ("Invalid due date, due date can't be earlier than today")</span>
 &nbsp;
-            this.findByIdAndUpdate(id, params, { new: true })
-                .then(data =&gt; {
-                    resolve(data)
-                })
-                .catch(err =&gt; {
-                    reject(err)
-                })
+                this.findByIdAndUpdate(id, params, { new: true })
+                    .then(data =&gt; {
+                        resolve(data)
+                    })
+                    .catch(err =&gt; {
+                        reject(err)
+                    })
         })
     }
 &nbsp;
@@ -522,6 +528,7 @@ module.exports = Task;</pre></td></tr></table></pre>
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 at Fri Feb 14 2020 20:50:50 GMT+0700 (Western Indonesia Time)
 =======
                 at Sat Feb 15 2020 18:37:56 GMT+0700 (Western Indonesia Time)
@@ -529,6 +536,9 @@ module.exports = Task;</pre></td></tr></table></pre>
 =======
                 at Sun Feb 16 2020 14:53:24 GMT+0700 (Western Indonesia Time)
 >>>>>>> 3b18171c8fdc0f3ddf25b2e9f07906fbd474bf10
+=======
+                at Sun Feb 16 2020 15:44:06 GMT+0700 (Western Indonesia Time)
+>>>>>>> d8c01a9651f01d8b896a9827a008222c4c3f963c
             </div>
         </div>
         <script src="../../prettify.js"></script>

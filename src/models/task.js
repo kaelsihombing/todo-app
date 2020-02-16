@@ -14,7 +14,7 @@ const taskSchema = new Schema({
     },
     importanceLevel: {
         type: Number,
-        enum: [1, 2, 3], // 1=Low, 2=Normal, 3=High, if FE can convert to String, delete this.
+        enum: [1, 2, 3], // 1=Low, 2=Normal, 3=High
         default: 2
     },
     completion: {
@@ -58,9 +58,9 @@ class Task extends mongoose.model('Task', taskSchema) {
             let options = {
                 page: page,
                 limit: 10,
-                collation: {locale: 'en'}
+                collation: { locale: 'en' }
             };
-            this.paginate({ owner: owner }, options)       
+            this.paginate({ owner: owner }, options)
                 .then(data => {
                     resolve(data)
                 })
@@ -69,7 +69,7 @@ class Task extends mongoose.model('Task', taskSchema) {
 
     static findAllTask(owner) {
         return new Promise((resolve) => {
-            this.find({ owner: owner })       
+            this.find({ owner: owner })
                 .then(data => {
                     resolve(data)
                 })
@@ -82,7 +82,7 @@ class Task extends mongoose.model('Task', taskSchema) {
                 page: page,
                 limit: 10,
                 sort: bodyParams.params,
-                collation: {locale: 'en'}
+                collation: { locale: 'en' }
             };
             this.paginate({ owner: owner }, options)
                 .then(data => {
@@ -99,7 +99,7 @@ class Task extends mongoose.model('Task', taskSchema) {
             let options = {
                 page: page,
                 limit: 10,
-                collation: {locale: 'en'}
+                collation: { locale: 'en' }
             };
             let params = {
                 owner: owner,
@@ -117,7 +117,7 @@ class Task extends mongoose.model('Task', taskSchema) {
         })
     }
 
-    static updateTask(id, bodyParams) {
+    static updateTask(owner, id, bodyParams) {
         return new Promise((resolve, reject) => {
             let params = {
                 title: bodyParams.title,
@@ -125,14 +125,26 @@ class Task extends mongoose.model('Task', taskSchema) {
                 importanceLevel: bodyParams.importanceLevel,
                 completion: bodyParams.completion,
             }
+
             for (let prop in params) if (!params[prop]) delete params[prop];
 
-            this.findByIdAndUpdate(id, params, { new: true })
+            let isDateValid = (Date.parse(params.dueDate) >= Date.now())
+
+            if (!isDateValid && bodyParams.dueDate) reject("Invalid due date, due date can't be earlier than today")
+            
+            this.findById(id)
                 .then(data => {
-                    resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
+                    if (data.owner != owner) return reject('Invalid credentials')
+
+                    this.findByIdAndUpdate(id, params, { new: true })
+                        .then(data => {
+                            resolve(data)
+                        })
+                        .catch(err => {
+                            reject(err)
+                        })
+                }).catch(() => {
+                    reject('Invalid task id')
                 })
         })
     }

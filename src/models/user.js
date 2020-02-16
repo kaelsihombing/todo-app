@@ -8,6 +8,10 @@ const imagekit = new Imagekit({
     privateKey: process.env.privateKey,
     urlEndpoint: process.env.urlEndpoint
 })
+const isEmpty = require('../helpers/isEmpty')
+
+require('mongoose-type-email')
+mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
 
 const userSchema = new Schema({
     fullname: {
@@ -16,10 +20,9 @@ const userSchema = new Schema({
         minlength: 4
     },
     email: {
-        type: String,
-        required: true,
+        type: mongoose.SchemaTypes.Email, 
+        // required: true,
         unique: true,
-        minlength: 4
     },
     image: {
         type: String,
@@ -28,6 +31,11 @@ const userSchema = new Schema({
     encrypted_password: {
         type: String,
         required: true,
+    },
+    language: {
+        type: String,
+        required: true,
+        default: 'en'
     }
 }, {
     versionKey: false,
@@ -42,7 +50,7 @@ class User extends mongoose.model('User', userSchema) {
             if (password !== password_confirmation) return reject('Password and Password Confirmation doesn\'t match')
 
             let encrypted_password = bcrypt.hashSync(password, 10)
-
+            
             this.create({
                 fullname, email, encrypted_password
             })
@@ -52,12 +60,14 @@ class User extends mongoose.model('User', userSchema) {
                         id: data._id,
                         fullname: data.fullname,
                         email: data.email,
+                        language: data.language,
                         token: token
                     })
                 })
-                .catch(() => {
+                .catch(err => {
+                    console.log(err)
                     reject({
-                        message: "Please fill the form"
+                        message: err.message
                     })
                 })
         })
@@ -67,13 +77,14 @@ class User extends mongoose.model('User', userSchema) {
         return new Promise((resolve, reject) => {
             this.findOne({ email })
                 .then(data => {
-                    if (!data) return reject('Email doesn\'t exist')
+                    const translate = require('../helpers/translate')
+                    if (isEmpty(data)) return reject(translate.translator('emailNotExist'))
 
                     let isPasswordValid = bcrypt.compareSync(password, data.encrypted_password)
 
                     if (!isPasswordValid) return reject('Password is wrong')
 
-                    let token = jwt.sign({ _id: data._id }, process.env.JWT_SIGNATURE_KEY)
+                    let token = jwt.sign({ _id: data._id, language:data.language }, process.env.JWT_SIGNATURE_KEY)
 
                     resolve({
                         id: data._id,
@@ -85,123 +96,11 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
-
-    // static updateData(id, data, buffer) {
-    //     return new Promise((resolve, reject) => {
-    //         if (buffer !== undefined) {
-    //             imagekit.upload({ file: buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
-    //                 .then(url => {
-    //                     this.findOne({ _id: id }, function (err, foundData) {
-    //                         if (err) {
-    //                             reject(err)
-    //                         } else {
-    //                             if (!foundData) {
-    //                                 reject(err)
-    //                             } else {
-    //                                 if (data.fullname) {
-    //                                     foundData.fullname = data.fullname;
-    //                                 }
-
-    //                                 if (data.email) {
-    //                                     foundData.email = data.email;
-    //                                 }
-
-    //                                 if (buffer) {
-    //                                     foundData.image = url.url
-    //                                 }
-
-    //                                 foundData.save(function (err, foundData) {
-    //                                     if (err) {
-    //                                         reject(err)
-    //                                     } else {
-    //                                         resolve({
-    //                                             data: foundData
-    //                                         })
-    //                                     }
-    //                                 })
-    //                             }
-    //                         }
-
-    //                     })
-    //                 })
-    //         } else {
-    //             this.findOne({ _id: id }, function (err, foundData) {
-    //                 if (err) {
-    //                     reject(err)
-    //                 } else {
-    //                     if (!foundData) {
-    //                         reject(err)
-    //                     } else {
-    //                         if (data.fullname) {
-    //                             foundData.fullname = data.fullname;
-    //                         }
-
-    //                         if (data.email) {
-    //                             foundData.email = data.email;
-    //                         }
-
-    //                         foundData.save(function (err, foundData) {
-    //                             if (err) {
-    //                                 reject(err)
-    //                             } else {
-    //                                 resolve({
-    //                                     data: foundData
-    //                                 })
-    //                             }
-    //                         })
-    //                     }
-    //                 }
-
-    //             })
-    //         }
-    //     })
-
-    // }
-
-    // static updateData(id, req) {
-    //     return new Promise((resolve, reject) => {
-    //         if (req.file !== undefined) {
-    //             imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
-    //                 .then(url => {
-    //                     let params = {
-    //                         fullname: req.body.fullname,
-    //                         email: req.body.email,
-    //                         image: url.url
-    //                     }
-    //                     for (let prop in params) if (!params[prop]) delete params[prop];
-    //                     this.findByIdAndUpdate(id, params, { new: true })
-    //                         .then(data => {
-    //                             resolve(data)
-    //                         })
-    //                         .catch(err => {
-    //                             reject(err)
-    //                         })
-    //                 })
-    //         } else {
-    //             let params = {
-    //                 fullname: req.body.fullname,
-    //                 email: req.body.email,
-    //             }
-    //             for (let prop in params) if (!params[prop]) delete params[prop];
-    //             this.findByIdAndUpdate(id, params, { new: true })
-    //                 .then(data => {
-    //                     resolve(data)
-    //                 })
-    //                 .catch(err => {
-    //                     reject(err)
-    //                 })
-    //         }
-    //     })
-
-    // }
-
-
-
-
     static async updateData(id, req) {
         let params = {
             fullname: req.body.fullname,
-            email: req.body.email
+            email: req.body.email,
+            language: req.body.language
         }
 
         for (let prop in params) if (!params[prop]) delete params[prop];
