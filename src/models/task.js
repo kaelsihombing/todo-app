@@ -76,46 +76,46 @@ class Task extends mongoose.model('Task', taskSchema) {
         })
     }
 
-    static sortTaskByParams(owner, bodyParams, page) {
-        return new Promise((resolve, reject) => {
-            let options = {
-                page: page,
-                limit: 10,
-                sort: bodyParams.params,
-                collation: { locale: 'en' }
-            };
-            this.paginate({ owner: owner }, options)
-                .then(data => {
-                    resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
-                })
-        })
-    }
+    // static sortTaskByParams(owner, bodyParams, page) {
+    //     return new Promise((resolve, reject) => {
+    //         let options = {
+    //             page: page,
+    //             limit: 10,
+    //             sort: bodyParams.params,
+    //             collation: { locale: 'en' }
+    //         };
+    //         this.paginate({ owner: owner }, options)
+    //             .then(data => {
+    //                 resolve(data)
+    //             })
+    //             .catch(err => {
+    //                 reject(err)
+    //             })
+    //     })
+    // }
 
-    static filterTaskByParams(owner, bodyParams, page) {
-        return new Promise((resolve, reject) => {
-            let options = {
-                page: page,
-                limit: 10,
-                collation: { locale: 'en' }
-            };
-            let params = {
-                owner: owner,
-                importanceLevel: bodyParams.importanceLevel,
-                completion: bodyParams.completion,
-            }
-            for (let prop in params) if (!params[prop]) delete params[prop];
-            this.paginate(params, options)
-                .then(data => {
-                    resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
-                })
-        })
-    }
+    // static filterTaskByParams(owner, bodyParams, page) {
+    //     return new Promise((resolve, reject) => {
+    //         let options = {
+    //             page: page,
+    //             limit: 10,
+    //             collation: { locale: 'en' }
+    //         };
+    //         let params = {
+    //             owner: owner,
+    //             importanceLevel: bodyParams.importanceLevel,
+    //             completion: bodyParams.completion,
+    //         }
+    //         for (let prop in params) if (!params[prop]) delete params[prop];
+    //         this.paginate(params, options)
+    //             .then(data => {
+    //                 resolve(data)
+    //             })
+    //             .catch(err => {
+    //                 reject(err)
+    //             })
+    //     })
+    // }
 
     static updateTask(owner, id, bodyParams) {
         return new Promise((resolve, reject) => {
