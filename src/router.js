@@ -15,5 +15,6 @@ router.post('/auth/login', user.login)
 router.post('/tasks/create', authenticate, task.createTask);
 router.get('/tasks/view', authenticate, task.viewTask);
 router.put('/tasks/edit', authenticate, task.editTask);
+router.delete('/tasks/delete', authenticate, task.deleteTask);
 
 module.exports = router;

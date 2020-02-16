@@ -16,10 +16,10 @@ const taskSchema = new Schema({
         enum: [1, 2, 3], // 1=Low, 2=Normal, 3=High, if FE can convert to String, delete this.
         default: 2
     },
-    importance: {
-        type: String,
-        enum: ["Low", "Normal", "High"]
-    },
+    // importance: {
+    //     type: String,
+    //     enum: ["Low", "Normal", "High"]
+    // },
     completion: {
         type: Boolean,
         default: false,
@@ -59,10 +59,32 @@ class Task extends mongoose.model('Task', taskSchema) {
 
     static updateTask(id, params) {
         return new Promise((resolve, reject) => {
-
             this.findByIdAndUpdate(id, params, { new: true })
                 .then(data => {
+                    // switch (data.importanceLevel) {
+                    //     case 1:
+                    //         data.importance = 'Low'
+                    //         break;
+                    //     case 2:
+                    //         data.importance = 'Normal'
+                    //         break;
+                    //     case 3:
+                    //         data.importance = 'High'
+                    //         break;
+                    // }
                     resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    static destroyTask(id) {
+        return new Promise((resolve, reject) => {
+            this.findByIdAndDelete(id)
+                .then(() => {
+                    resolve("Task deleted successfully!")
                 })
                 .catch(err => {
                     reject(err)
