@@ -18,16 +18,8 @@ const user = {
     password_confirmation: '123456'
 }
 
-<<<<<<< HEAD
-
-
-describe('~USER API UNIT TESTING~', function () {
-    before(function () {
-        // User.deleteMany({}, function () { })
-=======
 describe('~USER API UNIT TESTING~', function() {
     before(function () {
->>>>>>> 3b18171c8fdc0f3ddf25b2e9f07906fbd474bf10
         User.create({
             ...user,
             encrypted_password: bcrypt.hashSync(user.password, 10),
