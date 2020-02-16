@@ -21,7 +21,7 @@ const userSchema = new Schema({
     },
     email: {
         type: mongoose.SchemaTypes.Email, 
-        // required: true,
+        required: true,
         unique: true,
     },
     image: {
@@ -65,7 +65,7 @@ class User extends mongoose.model('User', userSchema) {
                     })
                 })
                 .catch(err => {
-                    console.log(err)
+                    // console.log(err)
                     reject({
                         message: err.message
                     })

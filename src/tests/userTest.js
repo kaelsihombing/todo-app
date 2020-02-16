@@ -20,6 +20,7 @@ const user = {
 
 describe('~USER API UNIT TESTING~', function() {
     before(function () {
+        User.deleteMany({}, function () { })
         User.create({
             ...user,
             encrypted_password: bcrypt.hashSync(user.password, 10),
@@ -27,7 +28,7 @@ describe('~USER API UNIT TESTING~', function() {
     })
 
     after(function () {
-        // Task.deleteMany({}, function () { })
+        Task.deleteMany({}, function () { })
         User.deleteMany({}, function () { })
     })
 
@@ -104,7 +105,7 @@ describe('~USER API UNIT TESTING~', function() {
                     let { success, error } = res.body;
                     expect(success).to.eq(false);
                     expect(error).to.be.an('object');
-                    expect(error.errmsg).to.eq('E11000 duplicate key error collection: awesome-project_test.users index: email_1 dup key: { : "test00@mail.com" }')
+                    expect(error.message).to.eq('E11000 duplicate key error collection: awesome-project_test.users index: email_1 dup key: { : "test00@mail.com" }')
 
                 })
         })
