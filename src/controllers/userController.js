@@ -24,13 +24,31 @@ exports.login = async (req, res) => {
     }
 }
 
+// exports.updateData = async (req, res) => {
+//     try {
+//         if (req.file === undefined) {
+//             let result = await User.updateData(req.user._id, req.body)
+//             success(res, result, 201)
+//         } else {
+//             let result = await User.updateData(req.user._id, req.body, req.file.buffer)
+//             success(res, result, 201)
+//         }
+//     }
+//     catch (err) {
+//         error(res, err, 422)
+//     }
+// }
+
 exports.updateData = async (req, res) => {
     try {
-        if (req.file === undefined) {
-            let result = await User.updateData(req.user._id, req.body)
+        if (req.file) {
+            console.log('2')
+            let result = await User.updateData(req.user._id, req.body, req.file)
             success(res, result, 201)
+
         } else {
-            let result = await User.updateData(req.user._id, req.body, req.file.buffer)
+            console.log('2')
+            let result = await User.updateData(req.user._id, req.body)
             success(res, result, 201)
         }
     }
@@ -38,4 +56,3 @@ exports.updateData = async (req, res) => {
         error(res, err, 422)
     }
 }
-
