@@ -1,0 +1,6 @@
+{
+    "emailNotExist": "Email tidak ditemukan",
+    "taskCreated":"Tugas berhasil dibuat",
+    "wrongEndPoint":"Kamu tersesat!, pastikan end point mu benar",
+    "taskEdited":"Tugas berhasil diubah"
+}

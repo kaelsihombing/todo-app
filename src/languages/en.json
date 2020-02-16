@@ -1,0 +1,6 @@
+{
+    "emailNotExist": "Email doesn't exist",
+    "taskCreated":"Task has been created",
+    "wrongEndPoint":"You Lost! please make sure your end point is valid",
+    "taskEdited":"Task has been changed"
+}
