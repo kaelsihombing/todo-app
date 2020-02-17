@@ -18,9 +18,8 @@ const user = {
     password_confirmation: '123456'
 }
 
-describe('~USER API UNIT TESTING~', function() {
+describe('~USER API UNIT TESTING~', function () {
     before(function () {
-        User.deleteMany({}, function () { })
         User.create({
             ...user,
             encrypted_password: bcrypt.hashSync(user.password, 10),
@@ -28,8 +27,8 @@ describe('~USER API UNIT TESTING~', function() {
     })
 
     after(function () {
-        Task.deleteMany({}, function () { })
-        User.deleteMany({}, function () { })
+        Task.deleteMany({}, () => { })
+        User.deleteMany({}, () => { })
     })
 
     //===================REGISTER====================
@@ -45,7 +44,6 @@ describe('~USER API UNIT TESTING~', function() {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
-                    //console.log(res.body)
                     expect(res.status).to.equal(201);
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -122,7 +120,6 @@ describe('~USER API UNIT TESTING~', function() {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
-                    // console.log(res.body);
                     expect(res.status).to.eq(422);
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -143,7 +140,6 @@ describe('~USER API UNIT TESTING~', function() {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(user))
                 .end(function (err, res) {
-                    // console.log(res.body);
                     expect(res.status).to.eq(200)
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -168,7 +164,6 @@ describe('~USER API UNIT TESTING~', function() {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
-                    // console.log(res.body);
                     expect(res.status).to.eq(422)
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -191,7 +186,6 @@ describe('~USER API UNIT TESTING~', function() {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
-                    // console.log(res.body);
                     expect(res.status).to.eq(422)
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');

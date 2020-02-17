@@ -54,13 +54,19 @@ class Task extends mongoose.model('Task', taskSchema) {
     }
 
     static findTask(owner, page, pagination) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             let options = {
                 page: page,
                 limit: 10,
                 pagination: JSON.parse(pagination),
                 collation: { locale: 'en' }
             };
+
+            this.find({ owner: owner })
+                .then(data => {
+                    let lastPage = Math.ceil(data.length / 10)
+                    if (options.page > lastPage) return reject("Page does not exist")
+                })
 
             this.paginate({ owner: owner }, options)
                 .then(data => {
@@ -77,12 +83,20 @@ class Task extends mongoose.model('Task', taskSchema) {
                 sort: `${sort}`,
                 collation: { locale: 'en' }
             };
+
+            if (['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion'].indexOf(options.sort) < 0) {
+                return reject("Invalid sorting parameter!")
+            }
+
+            this.find({ owner: owner })
+                .then(data => {
+                    let lastPage = Math.ceil(data.length / 10)
+                    if (options.page > lastPage) return reject("Page does not exist")
+                })
+
             this.paginate({ owner: owner }, options)
                 .then(data => {
                     resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
                 })
         })
     }
@@ -95,12 +109,20 @@ class Task extends mongoose.model('Task', taskSchema) {
                 sort: `-${sort}`,
                 collation: { locale: 'en' }
             };
+
+            if (['-title', '-createdAt', '-dueDate', '-importanceLevel', '-completion'].indexOf(options.sort) < 0) {
+                return reject("Invalid sorting parameter!")
+            }
+
+            this.find({ owner: owner })
+                .then(data => {
+                    let lastPage = Math.ceil(data.length / 10)
+                    if (options.page > lastPage) return reject("Page does not exist")
+                })
+
             this.paginate({ owner: owner }, options)
                 .then(data => {
                     resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
                 })
         })
     }
@@ -116,13 +138,20 @@ class Task extends mongoose.model('Task', taskSchema) {
                 owner: owner,
                 importanceLevel: value,
             }
-            for (let prop in params) if (!params[prop]) delete params[prop];
+
+            if (['1', '2', '3'].indexOf(params.importanceLevel) < 0) {
+                return reject("Invalid importancelevel value parameter!")
+            }
+
+            this.find({ owner: owner })
+                .then(data => {
+                    let lastPage = Math.ceil(data.length / 10)
+                    if (options.page > lastPage) return reject("Page does not exist")
+                })
+
             this.paginate(params, options)
                 .then(data => {
                     resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
                 })
         })
     }
@@ -138,13 +167,20 @@ class Task extends mongoose.model('Task', taskSchema) {
                 owner: owner,
                 completion: value,
             }
-            for (let prop in params) if (!params[prop]) delete params[prop];
+
+            if (['true', 'false'].indexOf(params.completion) < 0) {
+                return reject("Invalid completion value parameter!")
+            }
+
+            this.find({ owner: owner })
+                .then(data => {
+                    let lastPage = Math.ceil(data.length / 10)
+                    if (options.page > lastPage) return reject("Page does not exist")
+                })
+
             this.paginate(params, options)
                 .then(data => {
                     resolve(data)
-                })
-                .catch(err => {
-                    reject(err)
                 })
         })
     }
@@ -161,9 +197,8 @@ class Task extends mongoose.model('Task', taskSchema) {
             for (let prop in params) if (!params[prop]) delete params[prop];
 
             let isDateValid = (Date.parse(params.dueDate) >= Date.now())
+            if (!isDateValid && bodyParams.dueDate) return reject("Invalid due date, due date can't be earlier than today")
 
-            if (!isDateValid && bodyParams.dueDate) reject("Invalid due date, due date can't be earlier than today")
-            
             this.findById(id)
                 .then(data => {
                     if (data.owner != owner) return reject('Invalid credentials')
@@ -172,24 +207,29 @@ class Task extends mongoose.model('Task', taskSchema) {
                         .then(data => {
                             resolve(data)
                         })
-                        .catch(err => {
-                            reject(err)
-                        })
-                }).catch(() => {
-                    reject('Invalid task id')
+                })
+                .catch((err) => {
+                    reject(err)
                 })
         })
     }
 
-    static destroyTask(id) {
+    static destroyTask(owner, id) {
         return new Promise((resolve, reject) => {
-            this.findByIdAndDelete(id)
+
+            this.findById(id)
                 .then(data => {
-                    resolve(`Task ${data.title} successfully deleted!`)
+                    if (data.owner != owner) return reject('Invalid credentials')
+
+                    this.findByIdAndDelete(id)
+                        .then(data => {
+                            resolve(`Task ${data.title} successfully deleted!`)
+                        })
                 })
                 .catch(err => {
                     reject(err)
                 })
+
         })
     }
 }
