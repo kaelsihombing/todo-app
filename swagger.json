@@ -580,8 +580,8 @@
         "tags": [
           "task collection"
         ],
-        "summary": "View descending sorted task",
-        "description": "ask user to login before showing user's descending sorted task",
+        "summary": "View filtered by importanceLevel task",
+        "description": "ask user to login before showing user's filtered by importanceLevel task(s)",
         "consumes": [
           "application/json"
         ],
@@ -611,7 +611,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully show user's task(s)",
+            "description": "Successfully show user's filtered by importanceLevel task(s)",
             "schema": {
               "type": "object",
               "properties": {
@@ -673,8 +673,8 @@
         "tags": [
           "task collection"
         ],
-        "summary": "View descending sorted task",
-        "description": "ask user to login before showing user's descending sorted task",
+        "summary": "View filtered by completion task",
+        "description": "ask user to login before showing user's filtered by completion task(s)",
         "consumes": [
           "application/json"
         ],
@@ -699,7 +699,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successfully show user's task(s)",
+            "description": "Successfully show user's filtered by completion task(s)",
             "schema": {
               "type": "object",
               "properties": {
