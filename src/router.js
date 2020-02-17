@@ -16,7 +16,6 @@ router.post('/auth/login', user.login)
 //=============TASK-ROUTER
 router.post('/tasks', authenticate, task.createTask);
 router.get('/tasks/:page', authenticate, task.viewTask);
-router.get('/tasksall', authenticate, task.viewAllTask);
 router.get('/tasks/sort/asc/:sort/:page', authenticate, task.sortTaskAsc);
 router.get('/tasks/sort/desc/:sort/:page', authenticate, task.sortTaskDesc);
 router.get('/tasks/filter/importance/:value/:page', authenticate, task.filterTaskImportance);

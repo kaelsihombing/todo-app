@@ -17,12 +17,7 @@ exports.createTask = async (req, res) => {
 }
 
 exports.viewTask = async (req, res) => {
-    let result = await Task.findTask(req.user._id, req.params.page)
-    success(res, result, 200)
-}
-
-exports.viewAllTask = async (req, res) => {
-    let result = await Task.findAllTask(req.user._id)
+    let result = await Task.findTask(req.user._id, req.params.page, req.query.pagination || true)
     success(res, result, 200)
 }
 

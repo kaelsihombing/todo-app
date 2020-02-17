@@ -53,23 +53,16 @@ class Task extends mongoose.model('Task', taskSchema) {
         })
     }
 
-    static findTask(owner, page) {
+    static findTask(owner, page, pagination) {
         return new Promise((resolve) => {
             let options = {
                 page: page,
                 limit: 10,
+                pagination: JSON.parse(pagination),
                 collation: { locale: 'en' }
             };
-            this.paginate({ owner: owner }, options)
-                .then(data => {
-                    resolve(data)
-                })
-        })
-    }
 
-    static findAllTask(owner) {
-        return new Promise((resolve) => {
-            this.find({ owner: owner })
+            this.paginate({ owner: owner }, options)
                 .then(data => {
                     resolve(data)
                 })
