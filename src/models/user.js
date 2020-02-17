@@ -26,7 +26,7 @@ const userSchema = new Schema({
     },
     image: {
         type: String,
-        default: 'https://ik.imagekit.io/m1ke1magek1t/IMG-1581942880589_40itSdhr0'
+        default: 'https://ik.imagekit.io/m1ke1magek1t/default_image/leopard-face-in-flat-design-vector-11455279_hjoC0R2gM.jpg'
     },
     encrypted_password: {
         type: String
