@@ -1,5 +1,9 @@
 {
+    "loggedIn":"Selamat datang di duDO",
+    "emailDuplicate":"Email sudah pernah digunakan",
+    "userCreated": "User berhasil di buat",
     "emailNotExist": "Email tidak ditemukan",
+    "userUpdated":"Data anda berhasil di ubah",
     "taskCreated":"Tugas berhasil dibuat",
     "wrongEndPoint":"Kamu tersesat!, pastikan end point mu benar",
     "taskEdited":"Tugas berhasil diubah"

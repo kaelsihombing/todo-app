@@ -27,7 +27,7 @@ describe('~USER API UNIT TESTING~', function () {
     })
 
     after(function () {
-        Task.deleteMany({}, () => { })
+        // Task.deleteMany({}, () => { })
         User.deleteMany({}, () => { })
     })
 
@@ -171,7 +171,7 @@ describe('~USER API UNIT TESTING~', function () {
                     let { success, error } = res.body;
                     expect(success).to.eq(false);
                     expect(error).to.be.an('string');
-                    expect(error).to.eq('Password is wrong');
+                    expect(error).to.eq('Email or Password is wrong');
 
                 })
         })
@@ -210,6 +210,7 @@ describe('~USER API UNIT TESTING~', function () {
     //             .set('Content-Type', 'application/json')
     //             .send(JSON.stringify(user))
     //             .end((err, res) => {
+    //                 console.log(res.body)
     //                 let update = {
     //                     fullname: "mike sihombing",
     //                     email: "testUpdate@gmail.com",
@@ -221,7 +222,7 @@ describe('~USER API UNIT TESTING~', function () {
     //                     .set('Authorization', res.body.data.token)
     //                     .send(JSON.stringify(update))
     //                     .end(function (err, res) {
-    //                         console.log(res)
+    //                         console.log('haii')
     //                         expect(res.status).to.equal(201);
     //                         // expect(res.body).to.be.an('object')
     //                         // expect(res.body).to.have.property('success');

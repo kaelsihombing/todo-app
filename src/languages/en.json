@@ -1,5 +1,9 @@
 {
+    "loggedIn":"Welcome to duDO",
+    "emailDuplicate":"Email has already used",
+    "userCreated": "User has been created",
     "emailNotExist": "Email doesn't exist",
+    "userUpdated":"Your data has been edited",
     "taskCreated":"Task has been created",
     "wrongEndPoint":"You Lost! please make sure your end point is valid",
     "taskEdited":"Task has been changed"

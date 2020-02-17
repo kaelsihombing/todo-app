@@ -9,7 +9,7 @@ const imagekit = new Imagekit({
     urlEndpoint: process.env.urlEndpoint
 })
 const isEmpty = require('../helpers/isEmpty')
-
+const translate = require('../helpers/translate')
 require('mongoose-type-email')
 mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
 
@@ -20,17 +20,16 @@ const userSchema = new Schema({
         minlength: 4
     },
     email: {
-        type: mongoose.SchemaTypes.Email, 
+        type: mongoose.SchemaTypes.Email,
         required: true,
-        unique: true,
+        unique: true
     },
     image: {
         type: String,
-        optional: true,
+        default: 'https://ik.imagekit.io/m1ke1magek1t/IMG-1581942880589_40itSdhr0'
     },
     encrypted_password: {
-        type: String,
-        required: true,
+        type: String
     },
     language: {
         type: String,
@@ -50,7 +49,7 @@ class User extends mongoose.model('User', userSchema) {
             if (password !== password_confirmation) return reject('Password and Password Confirmation doesn\'t match')
 
             let encrypted_password = bcrypt.hashSync(password, 10)
-            
+
             this.create({
                 fullname, email, encrypted_password
             })
@@ -65,7 +64,6 @@ class User extends mongoose.model('User', userSchema) {
                     })
                 })
                 .catch(err => {
-                    // console.log(err)
                     reject({
                         message: err.message
                     })
@@ -73,18 +71,20 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
-    static login({ email, password }) {
+    static login(user) {
         return new Promise((resolve, reject) => {
-            this.findOne({ email })
-                .then(data => {
-                    const translate = require('../helpers/translate')
-                    if (isEmpty(data)) return reject(translate.translator('emailNotExist'))
+            this.findOne({ email: user.email })
+                .then(async data => {
 
-                    let isPasswordValid = bcrypt.compareSync(password, data.encrypted_password)
+                    if (isEmpty(data)) {
+                        return reject(await translate.translator('emailNotExist'))
+                    }
 
-                    if (!isPasswordValid) return reject('Password is wrong')
+                    let isPasswordValid = bcrypt.compareSync(user.password, data.encrypted_password)
 
-                    let token = jwt.sign({ _id: data._id, language:data.language }, process.env.JWT_SIGNATURE_KEY)
+                    if (!isPasswordValid) return reject('Email or Password is wrong')
+
+                    let token = jwt.sign({ _id: data._id, language: data.language }, process.env.JWT_SIGNATURE_KEY)
 
                     resolve({
                         id: data._id,
@@ -104,13 +104,16 @@ class User extends mongoose.model('User', userSchema) {
         }
 
         for (let prop in params) if (!params[prop]) delete params[prop];
-        
+
         if (req.file) {
             let url = await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
             params.image = url.url
+        } else {
+            params.image = 'https://ik.imagekit.io/m1ke1magek1t/IMG-1581942880589_40itSdhr0'
         }
-        
+
         return new Promise((resolve, reject) => {
+
             this.findByIdAndUpdate(id, params, { new: true })
                 .then(data => {
                     resolve(data)
@@ -119,34 +122,9 @@ class User extends mongoose.model('User', userSchema) {
                     reject(err)
                 })
         })
-
     }
 
-    // static updateData(id, data, image) {
-    //     return new Promise((resolve, reject) => {
-    //         if (image) {
-    //             imagekit.upload({ file: image.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
-    //                 .then(url => {
-    //                     console.log(url)
-    //                     this.findByIdAndUpdate(id, {
-    //                         fullname: data.fullname,
-    //                         email: data.email,
-    //                         image: url.url
-    //                     })
-    //                     resolve(data)
-    //                 })
-    //                 .catch(err => {
-    //                     reject(err)
-    //                 })
-    //         }
-    //         else {
-    //             this.findByIdAndUpdate(id, {
-    //                 fullname: data.fullname,
-    //                 email: data.email,
-    //             })
-    //         }
-    //     })
-    // }
+
 }
 
 module.exports = User;

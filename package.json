@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/bin/www",
     "dev": "nodemon --exec 'npm run lint && node' src/bin/www",
-    "test": "NODE_ENV=test mocha src/tests/tests.js --exit",
+    "test": "NODE_ENV=test mocha src/tests/userTest.js --exit",
     "test:coverage": "nyc --reporter=html --report-dir='./public/coverage' npm test",
     "lint": "eslint ."
   },
