@@ -473,7 +473,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should not show filtered by completion tasks for current user due to invalid completion value', () => {
+        it('Should not show filtered by completion tasks for current user due to invalid page', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
