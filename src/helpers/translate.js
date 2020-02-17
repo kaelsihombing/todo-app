@@ -11,12 +11,13 @@ class Translate {
         
         if (!isEmpty(req) && !isEmpty(req.headers.authorization)) {  
             const token = await jwt.verify(req.headers.authorization, process.env.JWT_SIGNATURE_KEY)
+            
             const user = await User.findById(token._id)
+            
             choosedLanguage = !isEmpty(user) && languagesList[user.language];
-        }
-        
-        console.log(choosedLanguage[key]);
-        
+            
+        }       
+        console.log(choosedLanguage[key])
         return choosedLanguage[key]
     }
 }
