@@ -4,10 +4,14 @@ const morgan = require('morgan')
 const dotenv = require('dotenv')
 const swaggerUi = require('swagger-ui-express')
 const documentation = require('../swagger.json')
+const cors = require('cors')
 dotenv.config()
 
 //  initialize mongoose connection
 require('./database.js')
+
+// cors
+app.use(cors())
 
 //  express middleware
 app.use(express.json())

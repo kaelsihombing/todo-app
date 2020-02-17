@@ -18,9 +18,8 @@ const user = {
     password_confirmation: '123456'
 }
 
-describe('~USER API UNIT TESTING~', function() {
+describe('~USER API UNIT TESTING~', function () {
     before(function () {
-        User.deleteMany({}, function () { })
         User.create({
             ...user,
             encrypted_password: bcrypt.hashSync(user.password, 10),
@@ -28,8 +27,8 @@ describe('~USER API UNIT TESTING~', function() {
     })
 
     after(function () {
-        Task.deleteMany({}, function () { })
-        User.deleteMany({}, function () { })
+        // Task.deleteMany({}, () => { })
+        User.deleteMany({}, () => { })
     })
 
     //===================REGISTER====================
@@ -45,7 +44,6 @@ describe('~USER API UNIT TESTING~', function() {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
-                    //console.log(res.body)
                     expect(res.status).to.equal(201);
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -122,7 +120,6 @@ describe('~USER API UNIT TESTING~', function() {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
-                    // console.log(res.body);
                     expect(res.status).to.eq(422);
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -143,7 +140,6 @@ describe('~USER API UNIT TESTING~', function() {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(user))
                 .end(function (err, res) {
-                    // console.log(res.body);
                     expect(res.status).to.eq(200)
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -168,7 +164,6 @@ describe('~USER API UNIT TESTING~', function() {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
-                    // console.log(res.body);
                     expect(res.status).to.eq(422)
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -176,7 +171,7 @@ describe('~USER API UNIT TESTING~', function() {
                     let { success, error } = res.body;
                     expect(success).to.eq(false);
                     expect(error).to.be.an('string');
-                    expect(error).to.eq('Password is wrong');
+                    expect(error).to.eq('Email or Password is wrong');
 
                 })
         })
@@ -191,7 +186,6 @@ describe('~USER API UNIT TESTING~', function() {
                 .set('Content-Type', 'application/json')
                 .send(JSON.stringify(data))
                 .end(function (err, res) {
-                    // console.log(res.body);
                     expect(res.status).to.eq(422)
                     expect(res.body).to.be.an('object')
                     expect(res.body).to.have.property('success');
@@ -216,6 +210,7 @@ describe('~USER API UNIT TESTING~', function() {
     //             .set('Content-Type', 'application/json')
     //             .send(JSON.stringify(user))
     //             .end((err, res) => {
+    //                 console.log(res.body)
     //                 let update = {
     //                     fullname: "mike sihombing",
     //                     email: "testUpdate@gmail.com",
@@ -227,7 +222,7 @@ describe('~USER API UNIT TESTING~', function() {
     //                     .set('Authorization', res.body.data.token)
     //                     .send(JSON.stringify(update))
     //                     .end(function (err, res) {
-    //                         console.log(res)
+    //                         console.log('haii')
     //                         expect(res.status).to.equal(201);
     //                         // expect(res.body).to.be.an('object')
     //                         // expect(res.body).to.have.property('success');

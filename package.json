@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/bin/www",
     "dev": "nodemon --exec 'npm run lint && node' src/bin/www",
-    "test": "NODE_ENV=test mocha src/tests/tests.js --exit",
+    "test": "NODE_ENV=test mocha src/tests/userTest.js --exit",
     "test:coverage": "nyc --reporter=html --report-dir='./public/coverage' npm test",
     "lint": "eslint ."
   },
@@ -24,6 +24,7 @@
     "bcryptjs": "^2.4.3",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "faker": "^4.1.0",
