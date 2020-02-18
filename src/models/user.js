@@ -9,9 +9,11 @@ const imagekit = new Imagekit({
     urlEndpoint: process.env.urlEndpoint
 })
 const isEmpty = require('../helpers/isEmpty')
-const translate = require('../helpers/translate')
+
 require('mongoose-type-email')
 mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
+
+const defaultImage = 'https://ik.imagekit.io/m1ke1magek1t/default_image/leopard-face-in-flat-design-vector-11455279_hjoC0R2gM.jpg';
 
 const userSchema = new Schema({
     fullname: {
@@ -26,7 +28,7 @@ const userSchema = new Schema({
     },
     image: {
         type: String,
-        default: 'https://ik.imagekit.io/m1ke1magek1t/default_image/leopard-face-in-flat-design-vector-11455279_hjoC0R2gM.jpg'
+        default: defaultImage
     },
     encrypted_password: {
         type: String
@@ -49,7 +51,7 @@ class User extends mongoose.model('User', userSchema) {
             if (password !== password_confirmation) return reject('Password and Password Confirmation doesn\'t match')
 
             let encrypted_password = bcrypt.hashSync(password, 10)
-
+            
             this.create({
                 fullname, email, encrypted_password
             })
@@ -60,6 +62,7 @@ class User extends mongoose.model('User', userSchema) {
                         fullname: data.fullname,
                         email: data.email,
                         language: data.language,
+                        image: data.image,
                         token: token
                     })
                 })
@@ -71,18 +74,17 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
+
     static login(user) {
         return new Promise((resolve, reject) => {
             this.findOne({ email: user.email })
                 .then(async data => {
 
-                    if (isEmpty(data)) {
-                        return reject(await translate.translator('emailNotExist'))
-                    }
+                    if (isEmpty(data)) return reject("Email doesn't exists, please check your email")
 
-                    let isPasswordValid = bcrypt.compareSync(user.password, data.encrypted_password)
+                    let isPasswordValid = await bcrypt.compareSync(user.password, data.encrypted_password)
 
-                    if (!isPasswordValid) return reject('Email or Password is wrong')
+                    if (!isPasswordValid) return reject("Email or Password is wrong, please check again")
 
                     let token = jwt.sign({ _id: data._id, language: data.language }, process.env.JWT_SIGNATURE_KEY)
 
@@ -90,6 +92,7 @@ class User extends mongoose.model('User', userSchema) {
                         id: data._id,
                         fullname: data.fullname,
                         email: data.email,
+                        image: data.image,
                         token: token
                     })
                 })
@@ -109,7 +112,7 @@ class User extends mongoose.model('User', userSchema) {
             let url = await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
             params.image = url.url
         } else {
-            params.image = 'https://ik.imagekit.io/m1ke1magek1t/IMG-1581942880589_40itSdhr0'
+            params.image = defaultImage
         }
 
         return new Promise((resolve, reject) => {
