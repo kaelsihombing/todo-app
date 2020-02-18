@@ -8,6 +8,10 @@ const multer = require('./middlewares/multer')
 
 const validateForm = require('./middlewares/validateForm')
 
+//reset password
+const {check} = require('express-validator');
+const Password = require('./controllers/password')
+
 //=============USER-ROUTER
 router.post('/users', validateForm, user.create)
 router.put('/users', multer, authenticate, user.updateData)
@@ -22,5 +26,17 @@ router.get('/tasks/filter/importance/:value/:page', authenticate, task.filterTas
 router.get('/tasks/filter/completion/:value/:page', authenticate, task.filterTaskCompletion);
 router.put('/tasks/:id', authenticate, task.editTask);
 router.delete('/tasks/:id', authenticate, task.deleteTask);
+
+//Password RESET
+router.post('/recover', [
+    check('email').isEmail().withMessage('Enter a valid email address'),
+], Password.recover);
+
+router.get('/reset/:token', Password.reset);
+
+router.post('/reset/:token', [
+    check('password').not().isEmpty().isLength({ min: 6 }).withMessage('Must be at least 6 chars long'),
+    check('confirmPassword', 'Passwords do not match').custom((value, { req }) => (value === req.body.password)),
+], Password.resetPassword);
 
 module.exports = router;

@@ -5,10 +5,22 @@ const dotenv = require('dotenv')
 const swaggerUi = require('swagger-ui-express')
 const documentation = require('../swagger.json')
 const cors = require('cors')
+var cons = require('consolidate');
 dotenv.config()
-
+var path = require("path");
 //  initialize mongoose connection
 require('./database.js')
+
+
+
+// view engine setup
+app.engine('html', cons.swig)
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
+
+// // // view engine setup
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'html');
 
 // cors
 app.use(cors())
