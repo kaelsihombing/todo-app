@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
 const Imagekit = require('imagekit')
 const imagekit = new Imagekit({
     publicKey: process.env.publicKey,
@@ -13,7 +14,7 @@ const isEmpty = require('../helpers/isEmpty')
 require('mongoose-type-email')
 mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
 
-const defaultImage = 'https://ik.imagekit.io/m1ke1magek1t/default_image/leopard-face-in-flat-design-vector-11455279_hjoC0R2gM.jpg';
+const defaultImage = 'https://ik.imagekit.io/m1ke1magek1t/default_image/seal-face-in-flat-design-vector-17125367_P7kNTkQZV.jpg';
 
 const userSchema = new Schema({
     fullname: {
@@ -21,22 +22,36 @@ const userSchema = new Schema({
         required: true,
         minlength: 4
     },
+
     email: {
         type: mongoose.SchemaTypes.Email,
         required: true,
         unique: true
     },
+
     image: {
         type: String,
         default: defaultImage
     },
+
     encrypted_password: {
         type: String
     },
+
     language: {
         type: String,
         required: true,
         default: 'en'
+    },
+
+    resetPasswordToken: {
+        type: String,
+        required: false
+    },
+
+    resetPasswordExpires: {
+        type: Date,
+        required: false
     }
 }, {
     versionKey: false,
@@ -45,13 +60,35 @@ const userSchema = new Schema({
 )
 
 class User extends mongoose.model('User', userSchema) {
+
+    static generatePasswordReset(id) {
+        var resetPasswordToken = crypto.randomBytes(20).toString('hex');
+        var resetPasswordExpires = Date.now() + 360000; // 6 minutes expired
+
+        let properties = {
+            resetPasswordToken : resetPasswordToken,
+            resetPasswordExpires : resetPasswordExpires
+        }
+
+        return new Promise((resolve, reject) => {
+            this.findByIdAndUpdate(id, properties, {new:true})
+                .then(data => {
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+        
+    }
+
     static register({ fullname, email, password, password_confirmation }) {
         return new Promise((resolve, reject) => {
 
             if (password !== password_confirmation) return reject('Password and Password Confirmation doesn\'t match')
 
             let encrypted_password = bcrypt.hashSync(password, 10)
-            
+
             this.create({
                 fullname, email, encrypted_password
             })
@@ -126,6 +163,8 @@ class User extends mongoose.model('User', userSchema) {
                 })
         })
     }
+
+    
 
 
 }
