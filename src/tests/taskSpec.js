@@ -17,6 +17,13 @@ const userSample = userFixtures.create();
 const userSample2 = userFixtures.create();
 const taskFixtures = require('../fixtures/taskFixtures.js');
 
+taskSample1 = taskFixtures.create();
+taskSample2 = taskFixtures.create();
+taskSample3 = taskFixtures.create();
+taskSample1.importanceLevel = 1
+taskSample2.importanceLevel = 2
+taskSample3.importanceLevel = 3
+
 
 describe('TASK API UNIT TESTING', () => {
     before(() => {
@@ -26,6 +33,11 @@ describe('TASK API UNIT TESTING', () => {
         User.register(userSample)
         userSample2.password_confirmation = userSample2.password
         User.register(userSample2)
+
+        Task.newTask(taskSample1, userSample._id)
+        Task.newTask(taskSample2, userSample._id)
+        Task.newTask(taskSample3, userSample._id)
+
     })
 
     context('POST /api/v1/tasks', () => {
@@ -128,7 +140,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should not show tasks for current user due to invalid page', function () {
+        it('Should not show tasks for current user due to invalid page', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
@@ -341,7 +353,7 @@ describe('TASK API UNIT TESTING', () => {
                         .get('/api/v1/tasks/1?pagination=false')
                         .set('Authorization', token)
                         .end((err, res) => {
-                            let valueParam = [1, 2, 3]
+                            let valueParam = ['1', '2', '3']
                             let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
@@ -398,7 +410,9 @@ describe('TASK API UNIT TESTING', () => {
                         .get('/api/v1/tasks/1?pagination=false')
                         .set('Authorization', token)
                         .end((err, res) => {
-                            let valueParam = [1, 2, 3]
+                            console.log(res.body);
+
+                            let valueParam = ['1', '2', '3']
                             let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = lastPage + 1
@@ -406,6 +420,8 @@ describe('TASK API UNIT TESTING', () => {
                                 .get(`/api/v1/tasks/filter/importance/${randomParam}/${page}`)
                                 .set('Authorization', token)
                                 .end((err, res) => {
+                                    console.log(res.body);
+
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
                                     expect(success).to.eq(false);
@@ -623,7 +639,7 @@ describe('TASK API UNIT TESTING', () => {
     })
 
     context('DELETE /api/v1/tasks/:id', () => {
-        it('Should not delete a task due to invalid task id', function () {
+        it('Should not delete a task due to invalid task id', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
@@ -682,7 +698,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should delete a task for current user', function () {
+        it('Should delete a task for current user', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
