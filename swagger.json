@@ -3,7 +3,7 @@
   "info": {
     "description": "This is an API Documentation for awesome-project.",
     "version": "1.0.0",
-    "title": "awesome-project-glints",
+    "title": "doDO App",
     "contact": {
       "email": "sntmcl1@gmail.com"
     }
@@ -97,24 +97,40 @@
         ],
         "summary": "Update user data",
         "consumes": [
-          "application/json"
+          "multipart/form-data"
         ],
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "in": "body",
-            "name": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/UsersUpdateDataRequest"
-            }
+            "in": "formData",
+            "name": "fullname",
+            "type": "string",
+            "description": "fullname to be changed"
+          },
+          {
+            "in": "formData",
+            "name": "image",
+            "type": "file",
+            "description": "the image to upload"
+          },
+          {
+            "in": "formData",
+            "name": "email",
+            "type": "string",
+            "description": "the email to be changed"
+          },
+          {
+            "in": "formData",
+            "name": "language",
+            "type": "string",
+            "description": "the language to be changed (id / en )"
           }
         ],
         "responses": {
           "201": {
-            "description": "Successfuly updated user data",
+            "description": "Your data has been edited",
             "schema": {
               "type": "object",
               "properties": {
@@ -128,30 +144,32 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "id": {
-                          "example": "5e467d3a15425d00171a4cac"
-                        },
                         "fullname": {
-                          "example": "Mike glints 2"
-                        },
-                        "email": {
-                          "example": "mike-glints-2@gmail.com"
-                        },
-                        "encrypted_password": {
-                          "example": "$2a$10$7N/PRRRc/QKkOSTvv0lzSu1Ukwix.eqZ1HAlEIDhryEsUdXujAOOm"
-                        },
-                        "createdAt": {
-                          "example": "2020-02-14T10:58:02.823Z"
-                        },
-                        "updateddAt": {
-                          "example": "2020-02-14T12:04:54.909Z"
+                          "example": "santo michael gonzales"
                         },
                         "image": {
                           "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1581681892861_ca8TkZjDP"
+                        },
+                        "email": {
+                          "example": "gonzales@gmail.com"
+                        },
+                        "language": {
+                          "example": "id"
                         }
                       }
                     }
                   }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "not successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "example": "error"
                 }
               }
             }
@@ -1036,23 +1054,6 @@
         "password_confirmation": {
           "type": "string",
           "example": "sntmcl1"
-        }
-      }
-    },
-    "UsersUpdateDataRequest": {
-      "type": "object",
-      "properties": {
-        "fullname": {
-          "type": "string",
-          "example": "Mike glints 2"
-        },
-        "email": {
-          "type": "string",
-          "example": "mike-glints-2@gmail.com"
-        },
-        "image": {
-          "type": "string",
-          "example": "https://ik.imagekit.io/m1ke1magek1t/IMG-1581681892861_ca8TkZjDP"
         }
       }
     },
