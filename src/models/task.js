@@ -34,6 +34,11 @@ const taskSchema = new Schema({
 
 taskSchema.plugin(mongoosePaginate)
 
+// var now = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate())
+var now = new Date()
+// var now = Date.now()
+console.log(now.toISOString())
+
 class Task extends mongoose.model('Task', taskSchema) {
     static newTask(bodyParams, owner) {
         return new Promise((resolve, reject) => {
@@ -143,8 +148,9 @@ class Task extends mongoose.model('Task', taskSchema) {
                 return reject("Invalid importancelevel value parameter!")
             }
 
-            this.find({ owner: owner })
+            this.find(params)
                 .then(data => {
+                    if (!data) return reject ("There are no such data")
                     let lastPage = Math.ceil(data.length / 10)
                     if (options.page > lastPage) return reject("Page does not exist")
                 })
@@ -172,8 +178,9 @@ class Task extends mongoose.model('Task', taskSchema) {
                 return reject("Invalid completion value parameter!")
             }
 
-            this.find({ owner: owner })
+            this.find(params)
                 .then(data => {
+                    if (!data) return reject ("There are no such data")
                     let lastPage = Math.ceil(data.length / 10)
                     if (options.page > lastPage) return reject("Page does not exist")
                 })

@@ -10,6 +10,7 @@ const imagekit = new Imagekit({
     urlEndpoint: process.env.urlEndpoint
 })
 const isEmpty = require('../helpers/isEmpty')
+// const translate = require('../helpers/translate').translator
 
 require('mongoose-type-email')
 mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
@@ -112,12 +113,13 @@ class User extends mongoose.model('User', userSchema) {
     }
 
 
-    static login(user) {
+    static async login(user) {
         return new Promise((resolve, reject) => {
             this.findOne({ email: user.email })
                 .then(async data => {
 
-                    if (isEmpty(data)) return reject("Email doesn't exists, please check your email")
+                    const translate = require('../helpers/translate').translator
+                    if (isEmpty(data)) return reject(await translate("emailNotExist"))
 
                     let isPasswordValid = await bcrypt.compareSync(user.password, data.encrypted_password)
 
