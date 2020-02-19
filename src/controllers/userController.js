@@ -29,7 +29,10 @@ exports.login = async (req, res) => {
 
 exports.updateData = async (req, res) => {
     try {
+        console.log('IMAGE',res.file)
+        console.log('BODY', req.body)
         let result = await User.updateData(req.user._id, req)
+        
         success(res, result, 201, await translator('userUpdated'), req)
     }
     catch (err) {

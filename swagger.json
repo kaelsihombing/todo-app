@@ -236,6 +236,55 @@
         }
       }
     },
+    "/recover": {
+      "post": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "recover user password",
+        "description": "Ask user for email ",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ForgotPassword"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "example": "a reset email has been sent to sntmcl1@gmail.com, please check your email"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "failed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "example": "Unauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/tasks": {
       "post": {
         "tags": [
@@ -1021,6 +1070,15 @@
         "password": {
           "type": "string",
           "example": "sntmcl1"
+        }
+      }
+    },
+    "ForgotPassword": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "sntmcl1@gmail.com"
         }
       }
     },

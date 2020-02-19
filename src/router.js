@@ -27,7 +27,7 @@ router.get('/tasks/filter/completion/:value/:page', authenticate, task.filterTas
 router.put('/tasks/:id', authenticate, task.editTask);
 router.delete('/tasks/:id', authenticate, task.deleteTask);
 
-//Password RESET
+//=============Password RESET
 router.post('/recover', [
     check('email').isEmail().withMessage('Enter a valid email address'),
 ], Password.recover);
