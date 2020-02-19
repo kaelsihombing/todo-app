@@ -18,7 +18,7 @@ exports.createTask = async (req, res) => {
 
 exports.viewTask = async (req, res) => {
     try {
-        let result = await Task.findTask(req.user._id, req.params.page, req.query.pagination || true)
+        let result = await Task.findTask(req.user._id, req.params.page, req.query.pagination || true, req.query.importanceLevel || undefined, req.query.completion || undefined)
         success(res, result, 200)
     }
     catch (err) {
