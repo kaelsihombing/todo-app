@@ -199,37 +199,37 @@ describe('~USER API UNIT TESTING~', function () {
         })
     })
 
-    context('POST /api/v1/users/update', () => {
-        var user = {};
-        it('Should login and get token', function () {
-            let user = {
-                email: 'test00@mail.com',
-                password: '123456',
-            }
-            chai.request(server)
-                .post('/api/v1/auth/login')
-                .set('Content-Type', 'application/json')
-                .send(JSON.stringify(user))
-                .end((err, res) => {
-                    user.token = res.body.data.token
-                })
-        })
+    // context('POST /api/v1/users/update', () => {
+    //     var user = {};
+    //     it('Should login and get token', function () {
+    //         let user = {
+    //             email: 'test00@mail.com',
+    //             password: '123456',
+    //         }
+    //         chai.request(server)
+    //             .post('/api/v1/auth/login')
+    //             .set('Content-Type', 'application/json')
+    //             .send(JSON.stringify(user))
+    //             .end((err, res) => {
+    //                 user.token = res.body.data.token
+    //             })
+    //     })
 
-        it('Should successfully update user data', function () {
-            let buffer = fs.readFileSync("/home/mike/Documents/awesome-project/src/tests/face1.jpeg")
-            chai.request(server)
-                .put('/api/v1/users')
-                // .type('form')
-                .set('Authorization', user.token)
-                .set('Content-Type', 'multipart/form-data')
-                .field('fullname', 'santo michael sihombing')
-                .field('email', 'sntmcl1@gmail.com')
-                .field('language', 'id')
-                .attach('image', buffer, `IMG-${Date.now()}`)
-                .end(function (err, res) {
-                    console.log(res.body)
-                })
-        })
+    //     it('Should successfully update user data', function () {
+    //         let buffer = fs.readFileSync("/home/mike/Documents/awesome-project/src/tests/face1.jpeg")
+    //         chai.request(server)
+    //             .put('/api/v1/users')
+    //             // .type('form')
+    //             .set('Authorization', user.token)
+    //             .set('Content-Type', 'multipart/form-data')
+    //             .field('fullname', 'santo michael sihombing')
+    //             .field('email', 'sntmcl1@gmail.com')
+    //             .field('language', 'id')
+    //             .attach('image', buffer, `IMG-${Date.now()}`)
+    //             .end(function (err, res) {
+    //                 console.log(res.body)
+    //             })
+    //     })
 
-    })
+    // })
 })
