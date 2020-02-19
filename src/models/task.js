@@ -65,6 +65,7 @@ class Task extends mongoose.model('Task', taskSchema) {
                 page: page,
                 limit: 10,
                 pagination: JSON.parse(pagination),
+                sort: '{-createdAt}',
                 collation: { locale: 'en' }
             };
 
@@ -74,7 +75,6 @@ class Task extends mongoose.model('Task', taskSchema) {
                 completion: completion,
             }
             for (let prop in params) if (!params[prop]) delete params[prop];
-            console.log('Params', params)
 
             this.find(params)
                 .then(data => {

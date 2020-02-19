@@ -383,9 +383,7 @@
             "Authorization": []
           }
         ]
-      }
-    },
-    "/tasks/:page": {
+      },
       "get": {
         "tags": [
           "task collection"
@@ -400,11 +398,11 @@
         ],
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "page",
             "required": true,
             "type": "number",
-            "description": "put page number into path parameter"
+            "description": "put page number into query parameter"
           }
         ],
         "responses": {
@@ -464,366 +462,7 @@
             "Authorization": []
           }
         ]
-      }
-    },
-    "/tasks/sort/asc/:sort/:page": {
-      "get": {
-        "tags": [
-          "task collection"
-        ],
-        "summary": "View ascending sorted task",
-        "description": "ask user to login before showing user's ascending sorted task",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "sort",
-            "required": true,
-            "type": "string",
-            "description": "put desired sorting param (title, createdAt, dueDate, importanceLevel or completion)"
-          },
-          {
-            "in": "path",
-            "name": "page",
-            "required": true,
-            "type": "number",
-            "description": "put page number into parameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully show user's task(s)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "example": "5e467bd899a0335d89b9fa40"
-                    },
-                    "title": {
-                      "example": "Go to bank"
-                    },
-                    "dueDate": {
-                      "example": "2020-02-29T00:00:00.000Z"
-                    },
-                    "importanceLevel": {
-                      "example": 1
-                    },
-                    "importance": {
-                      "example": "Low"
-                    },
-                    "owner": {
-                      "example": "5e44ec2c7de7ba15424a83f8"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Validation error due to invalid token",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "error": {
-                  "example": "Invalid token"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/tasks/sort/desc/:sort/:page": {
-      "get": {
-        "tags": [
-          "task collection"
-        ],
-        "summary": "View descending sorted task",
-        "description": "ask user to login before showing user's descending sorted task",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "sort",
-            "required": true,
-            "type": "string",
-            "description": "put desired sorting param (title, createdAt, dueDate, importanceLevel or completion)"
-          },
-          {
-            "in": "path",
-            "name": "page",
-            "required": true,
-            "type": "number",
-            "description": "put page number into parameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully show user's task(s)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "example": "5e467bd899a0335d89b9fa40"
-                    },
-                    "title": {
-                      "example": "Go to bank"
-                    },
-                    "dueDate": {
-                      "example": "2020-02-29T00:00:00.000Z"
-                    },
-                    "importanceLevel": {
-                      "example": 1
-                    },
-                    "importance": {
-                      "example": "Low"
-                    },
-                    "owner": {
-                      "example": "5e44ec2c7de7ba15424a83f8"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Validation error due to invalid token",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "error": {
-                  "example": "Invalid token"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/tasks/filter/importance/:value/:page": {
-      "get": {
-        "tags": [
-          "task collection"
-        ],
-        "summary": "View filtered by importanceLevel task",
-        "description": "ask user to login before showing user's filtered by importanceLevel task(s)",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "value",
-            "required": true,
-            "type": "string",
-            "enum": [
-              1,
-              2,
-              3
-            ],
-            "description": "put desired importanceLevel param (1, 2, or 3)"
-          },
-          {
-            "in": "path",
-            "name": "page",
-            "required": true,
-            "type": "number",
-            "description": "put page number into parameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully show user's filtered by importanceLevel task(s)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "example": "5e467bd899a0335d89b9fa40"
-                    },
-                    "title": {
-                      "example": "Go to bank"
-                    },
-                    "dueDate": {
-                      "example": "2020-02-29T00:00:00.000Z"
-                    },
-                    "importanceLevel": {
-                      "example": 1
-                    },
-                    "importance": {
-                      "example": "Low"
-                    },
-                    "owner": {
-                      "example": "5e44ec2c7de7ba15424a83f8"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Validation error due to invalid token",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "error": {
-                  "example": "Invalid token"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/tasks/filter/completion/:value/:page": {
-      "get": {
-        "tags": [
-          "task collection"
-        ],
-        "summary": "View filtered by completion task",
-        "description": "ask user to login before showing user's filtered by completion task(s)",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "value",
-            "required": true,
-            "type": "string",
-            "description": "put desired completion param (true or false)"
-          },
-          {
-            "in": "path",
-            "name": "page",
-            "required": true,
-            "type": "number",
-            "description": "put page number into parameter"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successfully show user's filtered by completion task(s)",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "example": "5e467bd899a0335d89b9fa40"
-                    },
-                    "title": {
-                      "example": "Go to bank"
-                    },
-                    "dueDate": {
-                      "example": "2020-02-29T00:00:00.000Z"
-                    },
-                    "importanceLevel": {
-                      "example": 1
-                    },
-                    "importance": {
-                      "example": "Low"
-                    },
-                    "owner": {
-                      "example": "5e44ec2c7de7ba15424a83f8"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Validation error due to invalid token",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean",
-                  "example": false
-                },
-                "error": {
-                  "example": "Invalid token"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Authorization": []
-          }
-        ]
-      }
-    },
-    "/tasks/:id": {
+      },
       "put": {
         "tags": [
           "task collection"
@@ -838,11 +477,11 @@
         ],
         "parameters": [
           {
-            "in": "path",
+            "in": "query",
             "name": "taskId",
             "required": true,
             "type": "string",
-            "description": "put task's _id value in path parameter"
+            "description": "put task's _id value into query parameter"
           },
           {
             "in": "body",
@@ -944,7 +583,7 @@
             "name": "id",
             "type": "string",
             "required": true,
-            "description": "put task's _id value in path parameter"
+            "description": "put task's _id value into query parameter"
           }
         ],
         "responses": {
@@ -1009,6 +648,363 @@
                 },
                 "error": {
                   "example": "Invalid credential || invalid task id"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/tasks/sort/asc": {
+      "get": {
+        "tags": [
+          "task collection"
+        ],
+        "summary": "View ascending sorted task",
+        "description": "ask user to login before showing user's ascending sorted task",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sort",
+            "required": true,
+            "type": "string",
+            "description": "put desired sorting param (title, createdAt, dueDate, importanceLevel or completion) into query parameter"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "type": "number",
+            "description": "put page number into query parameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully show user's task(s)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "example": "5e467bd899a0335d89b9fa40"
+                    },
+                    "title": {
+                      "example": "Go to bank"
+                    },
+                    "dueDate": {
+                      "example": "2020-02-29T00:00:00.000Z"
+                    },
+                    "importanceLevel": {
+                      "example": 1
+                    },
+                    "importance": {
+                      "example": "Low"
+                    },
+                    "owner": {
+                      "example": "5e44ec2c7de7ba15424a83f8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Validation error due to invalid token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": "Invalid token"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/tasks/sort/desc": {
+      "get": {
+        "tags": [
+          "task collection"
+        ],
+        "summary": "View descending sorted task",
+        "description": "ask user to login before showing user's descending sorted task",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "sort",
+            "required": true,
+            "type": "string",
+            "description": "put desired sorting param (title, createdAt, dueDate, importanceLevel or completion) into query parameter"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "type": "number",
+            "description": "put page number into query parameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully show user's task(s)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "example": "5e467bd899a0335d89b9fa40"
+                    },
+                    "title": {
+                      "example": "Go to bank"
+                    },
+                    "dueDate": {
+                      "example": "2020-02-29T00:00:00.000Z"
+                    },
+                    "importanceLevel": {
+                      "example": 1
+                    },
+                    "importance": {
+                      "example": "Low"
+                    },
+                    "owner": {
+                      "example": "5e44ec2c7de7ba15424a83f8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Validation error due to invalid token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": "Invalid token"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/tasks/filter/importance": {
+      "get": {
+        "tags": [
+          "task collection"
+        ],
+        "summary": "View filtered by importanceLevel task",
+        "description": "ask user to login before showing user's filtered by importanceLevel task(s)",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "value",
+            "required": true,
+            "type": "string",
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "description": "put desired importanceLevel param (1, 2, or 3) into query parameter"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "type": "number",
+            "description": "put page number into query parameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully show user's filtered by importanceLevel task(s)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "example": "5e467bd899a0335d89b9fa40"
+                    },
+                    "title": {
+                      "example": "Go to bank"
+                    },
+                    "dueDate": {
+                      "example": "2020-02-29T00:00:00.000Z"
+                    },
+                    "importanceLevel": {
+                      "example": 1
+                    },
+                    "importance": {
+                      "example": "Low"
+                    },
+                    "owner": {
+                      "example": "5e44ec2c7de7ba15424a83f8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Validation error due to invalid token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": "Invalid token"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/tasks/filter/completion": {
+      "get": {
+        "tags": [
+          "task collection"
+        ],
+        "summary": "View filtered by completion task",
+        "description": "ask user to login before showing user's filtered by completion task(s)",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "value",
+            "required": true,
+            "type": "string",
+            "description": "put desired completion param (true or false) into query parameter"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "type": "number",
+            "description": "put page number into query parameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully show user's filtered by completion task(s)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "example": "5e467bd899a0335d89b9fa40"
+                    },
+                    "title": {
+                      "example": "Go to bank"
+                    },
+                    "dueDate": {
+                      "example": "2020-02-29T00:00:00.000Z"
+                    },
+                    "importanceLevel": {
+                      "example": 1
+                    },
+                    "importance": {
+                      "example": "Low"
+                    },
+                    "owner": {
+                      "example": "5e44ec2c7de7ba15424a83f8"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Validation error due to invalid token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "error": {
+                  "example": "Invalid token"
                 }
               }
             }
