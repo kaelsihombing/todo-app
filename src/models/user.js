@@ -144,7 +144,6 @@ class User extends mongoose.model('User', userSchema) {
         }
 
         for (let prop in params) if (!params[prop]) delete params[prop];
-
         if (req.file) {
             let url = await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
             params.image = url.url
@@ -153,7 +152,6 @@ class User extends mongoose.model('User', userSchema) {
         }
 
         return new Promise((resolve, reject) => {
-
             this.findByIdAndUpdate(id, params, { new: true })
                 .then(data => {
                     resolve(data)
