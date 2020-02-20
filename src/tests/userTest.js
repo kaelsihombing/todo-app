@@ -170,8 +170,52 @@ describe('~USER API UNIT TESTING~', function () {
                     expect(res.body).to.have.property('error');
                     let { success, error } = res.body;
                     expect(success).to.eq(false);
-                    expect(error).to.be.an('string');
+                    // expect(error).to.be.an('string');
                     // expect(error).to.eq('Email or Password is wrong');
+
+                })
+        })
+
+        it('Should not successfully logged in because email doesn\'t exist', function () {
+            let data = {
+                email: 'test03@mail.com',
+                password: '123456',
+            }
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(data))
+                .end(function (err, res) {
+                    expect(res.status).to.eq(422)
+                    expect(res.body).to.be.an('object')
+                    expect(res.body).to.have.property('success');
+                    expect(res.body).to.have.property('error');
+                    let { success, error } = res.body;
+                    expect(success).to.eq(false);
+                    expect(error).to.be.an('string');
+                    // expect(error).to.eq('Email doesn\'t exist');
+
+                })
+        })
+    })
+
+     context('POST /api/v1/auth/login', function () {
+        it('Should successfully logged in', function () {
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(user))
+                .end(function (err, res) {
+                    expect(res.status).to.eq(200)
+                    expect(res.body).to.be.an('object')
+                    expect(res.body).to.have.property('success');
+                    expect(res.body).to.have.property('data');
+                    let { success, data } = res.body;
+                    expect(success).to.eq(true);
+                    expect(data).to.be.an('object')
+                    expect(data).to.have.property('id')
+                    expect(data).to.have.property('email')
+                    expect(data).to.have.property('token')
 
                 })
         })
@@ -232,4 +276,37 @@ describe('~USER API UNIT TESTING~', function () {
     //     })
 
     // })
+
+    context('POST /api/v1/recover', function () {
+
+        it('Should create new user', function () {
+            let data = {
+                ...user,
+                email: "kael.santomichaels1@gmail.com"
+            }
+
+            chai.request(server)
+                .post('/api/v1/users')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(data))
+                .end(function (err, res) {
+                })
+        })
+
+        it('Should successfully send email reset password', function () {
+                
+            chai.request(server)
+                .post('/api/v1/recover')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify({email: 'kael.santomichaels1@gmail.com'}))
+                .end(function (err, res) {
+                    console.log(res.status, res.body)
+                    expect(res.status).to.eq(200)
+                    expect(res.body).to.be.an('object')
+                    expect(res.body).to.have.property('message');
+                })
+        })
+    })
+
+//END
 })
