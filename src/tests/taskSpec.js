@@ -29,7 +29,7 @@ describe('TASK API UNIT TESTING', () => {
 
         for (let i = 0; i < 2; i++) {
             let taskSample = taskFixtures.create();
-            taskSample.importanceLevel = 
+            taskSample.importanceLevel = 1
             taskSample.completion = true
             chai.request(server)
                 .post('/api/v1/auth/login')
@@ -127,7 +127,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should not create a new task due to missing missing required information', () => {
+        it('Should not create a new task due to missing required information', () => {
             let taskSample = taskFixtures.create();
             delete taskSample.title;
             delete taskSample.dueDate;

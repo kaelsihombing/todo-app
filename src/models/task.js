@@ -217,7 +217,6 @@ class Task extends mongoose.model('Task', taskSchema) {
 
             if (bodyParams.completion === true) params.completion = true
             if (bodyParams.completion === false) params.completion = false
-            console.log(params);
             
 
             this.findById(id)
