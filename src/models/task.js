@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const Schema = mongoose.Schema;
 
+
+const now = new Date()
+const currentDate = now.setHours(0,0,0,0)
+
 const taskSchema = new Schema({
     title: {
         type: String,
@@ -9,7 +13,7 @@ const taskSchema = new Schema({
     },
     dueDate: {
         type: Date,
-        min: Date.now(),
+        min: currentDate,
         required: true,
     },
     importanceLevel: {
@@ -34,6 +38,7 @@ const taskSchema = new Schema({
 
 taskSchema.plugin(mongoosePaginate)
 
+
 class Task extends mongoose.model('Task', taskSchema) {
     static newTask(bodyParams, owner) {
         return new Promise((resolve, reject) => {
@@ -41,6 +46,7 @@ class Task extends mongoose.model('Task', taskSchema) {
                 title: bodyParams.title,
                 dueDate: bodyParams.dueDate,
                 importanceLevel: bodyParams.importanceLevel,
+                completion: bodyParams.completion || false,
                 owner: owner,
             }
             this.create(params)
@@ -53,16 +59,24 @@ class Task extends mongoose.model('Task', taskSchema) {
         })
     }
 
-    static findTask(owner, page, pagination) {
+    static findTask(owner, page, pagination, importanceLevel, completion) {
         return new Promise((resolve, reject) => {
             let options = {
                 page: page,
                 limit: 10,
                 pagination: JSON.parse(pagination),
+                sort: '-createdAt',
                 collation: { locale: 'en' }
             };
 
-            this.find({ owner: owner })
+            let params = {
+                owner: owner,
+                importanceLevel: importanceLevel,
+                completion: completion,
+            }
+            for (let prop in params) if (!params[prop]) delete params[prop];
+
+            this.find(params)
                 .then(data => {
                     let lastPage = Math.ceil(data.length / 10)
                     if (options.page > lastPage) return reject("Page does not exist")
@@ -143,8 +157,9 @@ class Task extends mongoose.model('Task', taskSchema) {
                 return reject("Invalid importancelevel value parameter!")
             }
 
-            this.find({ owner: owner })
+            this.find(params)
                 .then(data => {
+                    
                     let lastPage = Math.ceil(data.length / 10)
                     if (options.page > lastPage) return reject("Page does not exist")
                 })
@@ -172,8 +187,9 @@ class Task extends mongoose.model('Task', taskSchema) {
                 return reject("Invalid completion value parameter!")
             }
 
-            this.find({ owner: owner })
+            this.find(params)
                 .then(data => {
+                   
                     let lastPage = Math.ceil(data.length / 10)
                     if (options.page > lastPage) return reject("Page does not exist")
                 })
@@ -196,8 +212,12 @@ class Task extends mongoose.model('Task', taskSchema) {
 
             for (let prop in params) if (!params[prop]) delete params[prop];
 
-            let isDateValid = (Date.parse(params.dueDate) >= Date.now())
+            let isDateValid = (Date.parse(params.dueDate) >= currentDate)
             if (!isDateValid && bodyParams.dueDate) return reject("Invalid due date, due date can't be earlier than today")
+
+            if (bodyParams.completion === true) params.completion = true
+            if (bodyParams.completion === false) params.completion = false
+            
 
             this.findById(id)
                 .then(data => {

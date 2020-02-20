@@ -18,7 +18,7 @@ exports.createTask = async (req, res) => {
 
 exports.viewTask = async (req, res) => {
     try {
-        let result = await Task.findTask(req.user._id, req.params.page, req.query.pagination || true)
+        let result = await Task.findTask(req.user._id, req.query.page, req.query.pagination || true, req.query.importanceLevel || undefined, req.query.completion || undefined)
         success(res, result, 200)
     }
     catch (err) {
@@ -28,7 +28,7 @@ exports.viewTask = async (req, res) => {
 
 exports.sortTaskAsc = async (req, res) => {
     try {
-        let result = await Task.sortTaskByParamsAsc(req.user._id, req.params.sort, req.params.page)
+        let result = await Task.sortTaskByParamsAsc(req.user._id, req.query.sort, req.query.page)
         success(res, result, 200)
     }
     catch (err) {
@@ -38,7 +38,7 @@ exports.sortTaskAsc = async (req, res) => {
 
 exports.sortTaskDesc = async (req, res) => {
     try {
-        let result = await Task.sortTaskByParamsDesc(req.user._id, req.params.sort, req.params.page)
+        let result = await Task.sortTaskByParamsDesc(req.user._id, req.query.sort, req.query.page)
         success(res, result, 200)
     }
     catch (err) {
@@ -48,7 +48,7 @@ exports.sortTaskDesc = async (req, res) => {
 
 exports.filterTaskImportance = async (req, res) => {
     try {
-        let result = await Task.filterTaskByImportance(req.user._id, req.params.value, req.params.page)
+        let result = await Task.filterTaskByImportance(req.user._id, req.query.value, req.query.page)
         success(res, result, 200)
     }
     catch (err) {
@@ -58,7 +58,7 @@ exports.filterTaskImportance = async (req, res) => {
 
 exports.filterTaskCompletion = async (req, res) => {
     try {
-        let result = await Task.filterTaskByCompletion(req.user._id, req.params.value, req.params.page)
+        let result = await Task.filterTaskByCompletion(req.user._id, req.query.value, req.query.page)
         success(res, result, 200)
     }
     catch (err) {
@@ -68,7 +68,7 @@ exports.filterTaskCompletion = async (req, res) => {
 
 exports.editTask = async (req, res) => {
     try {
-        let result = await Task.updateTask(req.user._id, req.params.id, req.body)
+        let result = await Task.updateTask(req.user._id, req.query.id, req.body)
         success(res, result, 201, await translator('taskEdited', req))
     }
     catch (err) {
@@ -78,7 +78,7 @@ exports.editTask = async (req, res) => {
 
 exports.deleteTask = async (req, res) => {
     try {
-        let result = await Task.destroyTask(req.user._id, req.params.id)
+        let result = await Task.destroyTask(req.user._id, req.query.id)
         success(res, result, 200)
     }
     catch (err) {

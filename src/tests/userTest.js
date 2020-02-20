@@ -27,7 +27,7 @@ describe('~USER API UNIT TESTING~', function () {
     })
 
     after(function () {
-        // Task.deleteMany({}, () => { })
+        Task.deleteMany({}, () => { })
         User.deleteMany({}, () => { })
     })
 

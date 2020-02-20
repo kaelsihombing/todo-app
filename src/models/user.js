@@ -119,7 +119,8 @@ class User extends mongoose.model('User', userSchema) {
             this.findOne({ email: req.body.email })
                 .then(async data => {
 
-                    if (isEmpty(data)) return reject("Email doesn't exists, please check your email")
+                    const translate = require('../helpers/translate').translator
+                    if (isEmpty(data)) return reject(await translate("emailNotExist"))
 
                     if (bcrypt.compareSync(req.body.password, data.encrypted_password)) {
                         let token = jwt.sign({ _id: data._id, language: data.language }, process.env.JWT_SIGNATURE_KEY)

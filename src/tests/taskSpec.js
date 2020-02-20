@@ -20,12 +20,65 @@ const taskFixtures = require('../fixtures/taskFixtures.js');
 
 describe('TASK API UNIT TESTING', () => {
     before(() => {
-        // User.deleteMany({}, () => { })
-        // Task.deleteMany({}, () => { })
+        User.deleteMany({}, () => { })
+        Task.deleteMany({}, () => { })
         userSample.password_confirmation = userSample.password
         User.register(userSample)
         userSample2.password_confirmation = userSample2.password
         User.register(userSample2)
+
+        for (let i = 0; i < 2; i++) {
+            let taskSample = taskFixtures.create();
+            taskSample.importanceLevel = 1
+            taskSample.completion = true
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    chai.request(server)
+                        .post('/api/v1/tasks')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', res.body.data.token)
+                        .send(JSON.stringify(taskSample))
+                        .end((err, res) => { })
+                })
+        }
+
+        for (let i = 0; i < 2; i++) {
+            let taskSample = taskFixtures.create();
+            taskSample.importanceLevel = 2
+            taskSample.completion = false
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    chai.request(server)
+                        .post('/api/v1/tasks')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', res.body.data.token)
+                        .send(JSON.stringify(taskSample))
+                        .end((err, res) => { })
+                })
+        }
+
+        for (let i = 0; i < 2; i++) {
+            let taskSample = taskFixtures.create();
+            taskSample.importanceLevel = 3
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    chai.request(server)
+                        .post('/api/v1/tasks')
+                        .set('Content-Type', 'application/json')
+                        .set('Authorization', res.body.data.token)
+                        .send(JSON.stringify(taskSample))
+                        .end((err, res) => { })
+                })
+        }
     })
 
     context('POST /api/v1/tasks', () => {
@@ -64,7 +117,7 @@ describe('TASK API UNIT TESTING', () => {
                     chai.request(server)
                         .post('/api/v1/tasks')
                         .set('Content-Type', 'application/json')
-                        .set('Authorization', res.body.data.token)
+                        .set('Authorization', 'Bearer ' + res.body.data.token)
                         .send(JSON.stringify(taskSample))
                         .end((err, res) => {
                             expect(res.status).to.equal(401);
@@ -74,7 +127,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should not create a new task due to missing missing required information', () => {
+        it('Should not create a new task due to missing required information', () => {
             let taskSample = taskFixtures.create();
             delete taskSample.title;
             delete taskSample.dueDate;
@@ -86,7 +139,7 @@ describe('TASK API UNIT TESTING', () => {
                     chai.request(server)
                         .post('/api/v1/tasks')
                         .set('Content-Type', 'application/json')
-                        .set('Authorization', res.body.data.token)
+                        .set('Authorization', 'Bearer '+res.body.data.token)
                         .send(JSON.stringify(taskSample))
                         .end((err, res) => {
                             expect(res.status).to.equal(422);
@@ -98,7 +151,7 @@ describe('TASK API UNIT TESTING', () => {
         })
     })
 
-    context('GET /api/v1/tasks/:page/:pagination', () => {
+    context('GET /api/v1/tasks', () => {
         it('Should show tasks for current user', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
@@ -107,14 +160,16 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
-                                .get(`/api/v1/tasks/${page}`)
-                                .set('Authorization', token)
+                                .get(`/api/v1/tasks`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ page: page })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
@@ -128,7 +183,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should not show tasks for current user due to invalid page', function () {
+        it('Should not show tasks for current user due to invalid page', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
@@ -136,14 +191,16 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = lastPage + 1
                             chai.request(server)
-                                .get(`/api/v1/tasks/${page}`)
-                                .set('Authorization', token)
+                                .get(`/api/v1/tasks`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ page: page })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(422);
                                     let { success, data } = res.body;
@@ -155,7 +212,7 @@ describe('TASK API UNIT TESTING', () => {
         })
     })
 
-    context('GET /api/v1//tasks/sort/asc/:sort/:page', () => {
+    context('GET /api/v1//tasks/sort/asc', () => {
         it('Should show ascending sorted tasks for current user', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
@@ -164,16 +221,18 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let sortParam = ['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion']
                             let randomParam = sortParam[Math.floor(Math.random() * sortParam.length)]
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
-                                .get(`/api/v1/tasks/sort/asc/${randomParam}/${page}`)
-                                .set('Authorization', token)
+                                .get(`/api/v1/tasks/sort/asc`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
@@ -194,15 +253,17 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let randomParam = 'randomParam'
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
-                                .get(`/api/v1/tasks/sort/asc/${randomParam}/${page}`)
-                                .set('Authorization', token)
+                                .get(`/api/v1/tasks/sort/asc`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -221,8 +282,9 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let sortParam = ['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion']
                             let randomParam = sortParam[Math.floor(Math.random() * sortParam.length)]
@@ -230,8 +292,9 @@ describe('TASK API UNIT TESTING', () => {
                             let page = lastPage + 1
                             page = page.toString()
                             chai.request(server)
-                                .get(`/api/v1/tasks/sort/asc/${randomParam}/${page}`)
-                                .set('Authorization', token)
+                                .get(`/api/v1/tasks/sort/asc`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -242,7 +305,7 @@ describe('TASK API UNIT TESTING', () => {
         })
     })
 
-    context('GET /api/v1//tasks/sort/desc/:sort/:page', () => {
+    context('GET /api/v1//tasks/sort/desc', () => {
         it('Should show descending sorted tasks for current user', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
@@ -251,16 +314,18 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let sortParam = ['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion']
                             let randomParam = sortParam[Math.floor(Math.random() * sortParam.length)]
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
-                                .get(`/api/v1/tasks/sort/desc/${randomParam}/${page}`)
-                                .set('Authorization', token)
+                                .get(`/api/v1/tasks/sort/desc`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
@@ -281,15 +346,17 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .query({ page: 1, pagination: false })
+                        .set('Authorization', 'Bearer ' + token)
                         .end((err, res) => {
                             let randomParam = 'randomParam'
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
-                                .get(`/api/v1/tasks/sort/desc/${randomParam}/${page}`)
-                                .set('Authorization', token)
+                                .get(`/api/v1/tasks/sort/desc`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -308,8 +375,9 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let sortParam = ['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion']
                             let randomParam = sortParam[Math.floor(Math.random() * sortParam.length)]
@@ -317,8 +385,9 @@ describe('TASK API UNIT TESTING', () => {
                             let page = lastPage + 1
                             page = page.toString()
                             chai.request(server)
-                                .get(`/api/v1/tasks/sort/desc/${randomParam}/${page}`)
-                                .set('Authorization', token)
+                                .get(`/api/v1/tasks/sort/desc`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -329,179 +398,7 @@ describe('TASK API UNIT TESTING', () => {
         })
     })
 
-    context('GET /api/v1//tasks/filter/importance/:value/:page', () => {
-        it('Should show filtered by importance level tasks for current user', () => {
-            chai.request(server)
-                .post('/api/v1/auth/login')
-                .set('Content-Type', 'application/json')
-                .send(JSON.stringify(userSample))
-                .end((err, res) => {
-                    let token = res.body.data.token
-                    chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
-                        .end((err, res) => {
-                            let valueParam = [1, 2, 3]
-                            let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
-                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
-                            let page = Math.ceil(Math.random() * (lastPage))
-                            chai.request(server)
-                                .get(`/api/v1/tasks/filter/importance/${randomParam}/${page}`)
-                                .set('Authorization', token)
-                                .end((err, res) => {
-                                    expect(res.status).to.equal(200);
-                                    expect(res.body).to.be.an('object');
-                                    expect(res.body).to.have.property('success');
-                                    expect(res.body).to.have.property('data');
-                                    let { success, data } = res.body;
-                                    expect(success).to.eq(true);
-                                });
-                        })
-                })
-        })
-
-        it('Should not show filtered by importance level tasks for current user due to invalid importance level value', () => {
-            chai.request(server)
-                .post('/api/v1/auth/login')
-                .set('Content-Type', 'application/json')
-                .send(JSON.stringify(userSample))
-                .end((err, res) => {
-                    let token = res.body.data.token
-                    chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
-                        .end((err, res) => {
-                            let randomParam = 'randomParam'
-                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
-                            let page = Math.ceil(Math.random() * (lastPage))
-                            chai.request(server)
-                                .get(`/api/v1/tasks/filter/importance/${randomParam}/${page}`)
-                                .set('Authorization', token)
-                                .end((err, res) => {
-                                    expect(res.status).to.equal(422);
-                                    let { success, error } = res.body;
-                                    expect(success).to.eq(false);
-                                    expect(error).to.eq('Invalid importancelevel value parameter!')
-                                });
-                        })
-                })
-        })
-
-        it('Should not show filtered by importance level tasks for current user due to invalid page', () => {
-            chai.request(server)
-                .post('/api/v1/auth/login')
-                .set('Content-Type', 'application/json')
-                .send(JSON.stringify(userSample))
-                .end((err, res) => {
-                    let token = res.body.data.token
-                    chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
-                        .end((err, res) => {
-                            let valueParam = [1, 2, 3]
-                            let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
-                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
-                            let page = lastPage + 1
-                            chai.request(server)
-                                .get(`/api/v1/tasks/filter/importance/${randomParam}/${page}`)
-                                .set('Authorization', token)
-                                .end((err, res) => {
-                                    expect(res.status).to.equal(422);
-                                    let { success, error } = res.body;
-                                    expect(success).to.eq(false);
-                                });
-                        })
-                })
-        })
-    })
-
-    context('GET /api/v1//tasks/filter/completion/:value/:page', () => {
-        it('Should show filtered by completion tasks for current user', () => {
-            chai.request(server)
-                .post('/api/v1/auth/login')
-                .set('Content-Type', 'application/json')
-                .send(JSON.stringify(userSample))
-                .end((err, res) => {
-                    let token = res.body.data.token
-                    chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
-                        .end((err, res) => {
-                            let valueParam = [true, false]
-                            let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
-                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
-                            let page = Math.ceil(Math.random() * (lastPage))
-                            chai.request(server)
-                                .get(`/api/v1/tasks/filter/completion/${randomParam}/${page}`)
-                                .set('Authorization', token)
-                                .end((err, res) => {
-                                    expect(res.status).to.equal(200);
-                                    expect(res.body).to.be.an('object');
-                                    expect(res.body).to.have.property('success');
-                                    expect(res.body).to.have.property('data');
-                                    let { success, data } = res.body;
-                                    expect(success).to.eq(true);
-                                });
-                        })
-                })
-        })
-
-        it('Should not show filtered by completion tasks for current user due to invalid completion value', () => {
-            chai.request(server)
-                .post('/api/v1/auth/login')
-                .set('Content-Type', 'application/json')
-                .send(JSON.stringify(userSample))
-                .end((err, res) => {
-                    let token = res.body.data.token
-                    chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
-                        .end((err, res) => {
-                            let randomParam = 'randomParam'
-                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
-                            let page = Math.ceil(Math.random() * (lastPage))
-                            chai.request(server)
-                                .get(`/api/v1/tasks/filter/completion/${randomParam}/${page}`)
-                                .set('Authorization', token)
-                                .end((err, res) => {
-                                    expect(res.status).to.equal(422);
-                                    let { success, error } = res.body;
-                                    expect(success).to.eq(false);
-                                    expect(error).to.eq('Invalid completion value parameter!')
-                                });
-                        })
-                })
-        })
-
-        it('Should not show filtered by completion tasks for current user due to invalid page', () => {
-            chai.request(server)
-                .post('/api/v1/auth/login')
-                .set('Content-Type', 'application/json')
-                .send(JSON.stringify(userSample))
-                .end((err, res) => {
-                    let token = res.body.data.token
-                    chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
-                        .end((err, res) => {
-                            let valueParam = [true, false]
-                            let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
-                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
-                            let page = lastPage + 1
-                            chai.request(server)
-                                .get(`/api/v1/tasks/filter/completion/${randomParam}/${page}`)
-                                .set('Authorization', token)
-                                .end((err, res) => {
-                                    expect(res.status).to.equal(422);
-                                    let { success, error } = res.body;
-                                    expect(success).to.eq(false);
-                                });
-                        })
-                })
-        })
-    })
-
-    context('PUT /api/v1/tasks/:id', () => {
+    context('PUT /api/v1/tasks', () => {
         it('Should update a selected task for current user', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
@@ -510,15 +407,18 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
+                        .get('/api/v1/tasks')
                         .set('Authorization', token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                             let taskSample = taskFixtures.create()
+                            let id = res.body.data.docs[i]._id
                             chai.request(server)
-                                .put(`/api/v1/tasks/${res.body.data.docs[i]._id}`)
+                                .put(`/api/v1/tasks`)
                                 .set('Content-Type', 'application/json')
                                 .set('Authorization', token)
+                                .query({ id: id })
                                 .send(JSON.stringify(taskSample))
                                 .end((err, res) => {
                                     expect(res.status).to.equal(201);
@@ -540,16 +440,19 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
+                        .get('/api/v1/tasks')
                         .set('Authorization', token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                             let taskSample = taskFixtures.create()
                             taskSample.dueDate = faker.date.past()
+                            let id = res.body.data.docs[i]._id
                             chai.request(server)
-                                .put(`/api/v1/tasks/${res.body.data.docs[i]._id}`)
+                                .put(`/api/v1/tasks`)
                                 .set('Content-Type', 'application/json')
                                 .set('Authorization', token)
+                                .query({ id: id })
                                 .send(JSON.stringify(taskSample))
                                 .end((err, res) => {
                                     expect(res.status).to.equal(422);
@@ -568,14 +471,17 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', res.body.data.token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let taskSample = taskFixtures.create()
+                            let id = 'randomId'
                             chai.request(server)
-                                .put('/api/v1/tasks/randomId')
+                                .put('/api/v1/tasks')
                                 .set('Content-Type', 'application/json')
                                 .set('Authorization', token)
+                                .query({ id: id })
                                 .send(JSON.stringify(taskSample))
                                 .end((err, res) => {
                                     expect(res.status).to.equal(422);
@@ -594,8 +500,9 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
+                        .get('/api/v1/tasks')
                         .set('Authorization', token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                             let taskSample = taskFixtures.create()
@@ -607,9 +514,10 @@ describe('TASK API UNIT TESTING', () => {
                                 .end((err, res) => {
                                     let token2 = res.body.data.token
                                     chai.request(server)
-                                        .put(`/api/v1/tasks/${existingTaskId}`)
+                                        .put(`/api/v1/tasks`)
                                         .set('Content-Type', 'application/json')
                                         .set('Authorization', token2)
+                                        .query({ id: existingTaskId })
                                         .send(JSON.stringify(taskSample))
                                         .end((err, res) => {
                                             expect(res.status).to.equal(422);
@@ -622,8 +530,196 @@ describe('TASK API UNIT TESTING', () => {
         })
     })
 
+    context('GET /api/v1//tasks/filter/importance/:value/:page', () => {
+        it('Should show filtered by importance level tasks for current user', () => {
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    let valueParam = ['1', '2', '3']
+                    let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
+                    chai.request(server)
+                        .get(`/api/v1/tasks`)
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, importanceLevel: randomParam })
+                        .end((err, res) => {
+                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                            let page = Math.ceil(Math.random() * (lastPage))
+                            chai.request(server)
+                                .get(`/api/v1/tasks/filter/importance`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
+                                .end((err, res) => {
+                                    expect(res.status).to.equal(200);
+                                    expect(res.body).to.be.an('object');
+                                    expect(res.body).to.have.property('success');
+                                    expect(res.body).to.have.property('data');
+                                    let { success, data } = res.body;
+                                    expect(success).to.eq(true);
+                                });
+                        })
+                })
+        })
+
+        it('Should not show filtered by importance level tasks for current user due to invalid importance level value', () => {
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    let valueParam = ['1', '2', '3']
+                    let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
+                    chai.request(server)
+                        .get(`/api/v1/tasks`)
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, importanceLevel: randomParam })
+                        .end((err, res) => {
+                            randomParam = 'randomParam'
+                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                            let page = Math.ceil(Math.random() * (lastPage))
+                            chai.request(server)
+                                .get(`/api/v1/tasks/filter/importance`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
+                                .end((err, res) => {
+                                    expect(res.status).to.equal(422);
+                                    let { success, error } = res.body;
+                                    expect(success).to.eq(false);
+                                    expect(error).to.eq('Invalid importancelevel value parameter!')
+                                });
+                        })
+                })
+        })
+
+        it('Should not show filtered by importance level tasks for current user due to invalid page', () => {
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    let valueParam = ['1', '2', '3']
+                    let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
+                    chai.request(server)
+                        .get(`/api/v1/tasks`)
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, importanceLevel: randomParam })
+                        .end((err, res) => {
+                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                            let page = lastPage + 1
+                            chai.request(server)
+                                .get(`/api/v1/tasks/filter/importance`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
+                                .end((err, res) => {
+                                    expect(res.status).to.equal(422);
+                                    let { success, error } = res.body;
+                                    expect(success).to.eq(false);
+                                });
+                        })
+                })
+        })
+    })
+
+    context('GET /api/v1//tasks/filter/completion', () => {
+        it('Should show filtered by completion tasks for current user', () => {
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    let valueParam = [true, false]
+                    let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
+                    chai.request(server)
+                        .get(`/api/v1/tasks`)
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, completion: randomParam })
+                        .end((err, res) => {
+                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                            let page = Math.ceil(Math.random() * (lastPage))
+                            chai.request(server)
+                                .get(`/api/v1/tasks/filter/completion`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
+                                .end((err, res) => {
+                                    expect(res.status).to.equal(200);
+                                    expect(res.body).to.be.an('object');
+                                    expect(res.body).to.have.property('success');
+                                    expect(res.body).to.have.property('data');
+                                    let { success, data } = res.body;
+                                    expect(success).to.eq(true);
+                                });
+                        })
+                })
+        })
+
+        it('Should not show filtered by completion tasks for current user due to invalid completion value', () => {
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    let valueParam = [true, false]
+                    let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
+                    chai.request(server)
+                        .get(`/api/v1/tasks`)
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, completion: randomParam })
+                        .end((err, res) => {
+                            randomParam = 'randomParam'
+                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                            let page = Math.ceil(Math.random() * (lastPage))
+                            chai.request(server)
+                                .get(`/api/v1/tasks/filter/completion`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
+                                .end((err, res) => {
+                                    expect(res.status).to.equal(422);
+                                    let { success, error } = res.body;
+                                    expect(success).to.eq(false);
+                                    expect(error).to.eq('Invalid completion value parameter!')
+                                });
+                        })
+                })
+        })
+
+        it('Should not show filtered by completion tasks for current user due to invalid page', () => {
+            chai.request(server)
+                .post('/api/v1/auth/login')
+                .set('Content-Type', 'application/json')
+                .send(JSON.stringify(userSample))
+                .end((err, res) => {
+                    let token = res.body.data.token
+                    let valueParam = [true, false]
+                    let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
+                    chai.request(server)
+                        .get(`/api/v1/tasks`)
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, completion: randomParam })
+                        .end((err, res) => {
+                            let lastPage = Math.ceil(res.body.data.totalDocs / 10)
+                            let page = lastPage + 1
+                            chai.request(server)
+                                .get(`/api/v1/tasks/filter/completion`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
+                                .end((err, res) => {
+                                    expect(res.status).to.equal(422);
+                                    let { success, error } = res.body;
+                                    expect(success).to.eq(false);
+                                });
+                        })
+                })
+        })
+    })
+
     context('DELETE /api/v1/tasks/:id', () => {
-        it('Should not delete a task due to invalid task id', function () {
+        it('Should not delete a task due to invalid task id', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
@@ -631,12 +727,15 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
+                            let id = 'randomId'
                             chai.request(server)
-                                .delete('/api/v1/tasks/randomId')
-                                .set('Authorization', token)
+                                .delete('/api/v1/tasks')
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ id: id })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -655,8 +754,9 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
                             let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                             let taskSample = taskFixtures.create()
@@ -668,9 +768,10 @@ describe('TASK API UNIT TESTING', () => {
                                 .end((err, res) => {
                                     let token2 = res.body.data.token
                                     chai.request(server)
-                                        .delete(`/api/v1/tasks/${existingTaskId}`)
+                                        .delete(`/api/v1/tasks`)
                                         .set('Content-Type', 'application/json')
-                                        .set('Authorization', token2)
+                                        .set('Authorization', 'Bearer ' + token2)
+                                        .query({ id: existingTaskId })
                                         .send(JSON.stringify(taskSample))
                                         .end((err, res) => {
                                             expect(res.status).to.equal(422);
@@ -682,7 +783,7 @@ describe('TASK API UNIT TESTING', () => {
                 })
         })
 
-        it('Should delete a task for current user', function () {
+        it('Should delete a task for current user', () => {
             chai.request(server)
                 .post('/api/v1/auth/login')
                 .set('Content-Type', 'application/json')
@@ -690,13 +791,16 @@ describe('TASK API UNIT TESTING', () => {
                 .end((err, res) => {
                     let token = res.body.data.token
                     chai.request(server)
-                        .get('/api/v1/tasks/1?pagination=false')
-                        .set('Authorization', token)
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) => {
-                            let i = Math.floor(Math.random() * (res.body.data.docs.length - 1));
+                            let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
+                            let id = res.body.data.docs[i]._id
                             chai.request(server)
-                                .delete(`/api/v1/tasks/${res.body.data.docs[i]._id}`)
-                                .set('Authorization', token)
+                                .delete(`/api/v1/tasks`)
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ id: id })
                                 .end((err, res) => {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
