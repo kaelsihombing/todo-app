@@ -65,7 +65,7 @@ class Task extends mongoose.model('Task', taskSchema) {
                 page: page,
                 limit: 10,
                 pagination: JSON.parse(pagination),
-                sort: '{-createdAt}',
+                sort: '-createdAt',
                 collation: { locale: 'en' }
             };
 
@@ -214,6 +214,11 @@ class Task extends mongoose.model('Task', taskSchema) {
 
             let isDateValid = (Date.parse(params.dueDate) >= currentDate)
             if (!isDateValid && bodyParams.dueDate) return reject("Invalid due date, due date can't be earlier than today")
+
+            if (bodyParams.completion === true) params.completion = true
+            if (bodyParams.completion === false) params.completion = false
+            console.log(params);
+            
 
             this.findById(id)
                 .then(data => {
