@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.63% </span>
+                <span class="strong">92.71% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>88/95</span>
+                <span class='fraction'>89/96</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.63% </span>
+                <span class="strong">92.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>88/95</span>
+                <span class='fraction'>89/96</span>
             </div>
         
             
@@ -291,18 +291,12 @@
 <a name='L232'></a><a href='#L232'>232</a>
 <a name='L233'></a><a href='#L233'>233</a>
 <a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a>
-<a name='L236'></a><a href='#L236'>236</a>
-<a name='L237'></a><a href='#L237'>237</a>
-<a name='L238'></a><a href='#L238'>238</a>
-<a name='L239'></a><a href='#L239'>239</a>
-<a name='L240'></a><a href='#L240'>240</a>
-<a name='L241'></a><a href='#L241'>241</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L235'></a><a href='#L235'>235</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -492,12 +486,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -542,7 +530,7 @@ const chaiHttp = require('chai-http');
 const {
     expect
 } = chai;
-&nbsp;
+const fs = require('fs');
 chai.use(chaiHttp);
 const server = require('../index');
 &nbsp;
@@ -739,7 +727,8 @@ describe('~USER API UNIT TESTING~', function () {
     })
 &nbsp;
     // context('POST /api/v1/users/update', () =&gt; {
-    //     it('Should successfully update user data', function () {
+    //     var user = {};
+    //     it('Should login and get token', function () {
     //         let user = {
     //             email: 'test00@mail.com',
     //             password: '123456',
@@ -749,33 +738,26 @@ describe('~USER API UNIT TESTING~', function () {
     //             .set('Content-Type', 'application/json')
     //             .send(JSON.stringify(user))
     //             .end((err, res) =&gt; {
-    //                 console.log(res.body)
-    //                 let update = {
-    //                     fullname: "mike sihombing",
-    //                     email: "testUpdate@gmail.com",
-    //                 }
-    //                 chai.request(server)
-    //                     .put('/api/v1/users')
-    //                     .type('form')
-    //                     .set('Content-Type', 'application/json')
-    //                     .set('Authorization', res.body.data.token)
-    //                     .send(JSON.stringify(update))
-    //                     .end(function (err, res) {
-    //                         console.log('haii')
-    //                         expect(res.status).to.equal(201);
-    //                         // expect(res.body).to.be.an('object')
-    //                         // expect(res.body).to.have.property('success');
-    //                         // expect(res.body).to.have.property('data');
-    //                         // let { success, data } = res.body;
-    //                         // expect(success).to.eq(true);
-    //                         // expect(data).to.be.an('object');
-    //                         // expect(data).to.have.property('id')
-    //                         // expect(data).to.have.property('fullname')
-    //                         // expect(data).to.have.property('email')
-    //                     })
-&nbsp;
+    //                 user.token = res.body.data.token
     //             })
     //     })
+&nbsp;
+    //     it('Should successfully update user data', function () {
+    //         let buffer = fs.readFileSync("/home/mike/Documents/awesome-project/src/tests/face1.jpeg")
+    //         chai.request(server)
+    //             .put('/api/v1/users')
+    //             // .type('form')
+    //             .set('Authorization', user.token)
+    //             .set('Content-Type', 'multipart/form-data')
+    //             .field('fullname', 'santo michael sihombing')
+    //             .field('email', 'sntmcl1@gmail.com')
+    //             .field('language', 'id')
+    //             .attach('image', buffer, `IMG-${Date.now()}`)
+    //             .end(function (err, res) {
+    //                 console.log(res.body)
+    //             })
+    //     })
+&nbsp;
     // })
 })</pre></td></tr></table></pre>
 
@@ -784,7 +766,7 @@ describe('~USER API UNIT TESTING~', function () {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Wed Feb 19 2020 18:02:25 GMT+0700 (Western Indonesia Time)
+                at Thu Feb 20 2020 17:53:49 GMT+0700 (Western Indonesia Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>
