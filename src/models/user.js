@@ -3,6 +3,7 @@ const Schema = mongoose.Schema
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
+const axios = require('axios')
 const Imagekit = require('imagekit')
 const imagekit = new Imagekit({
     publicKey: process.env.publicKey,
@@ -10,6 +11,7 @@ const imagekit = new Imagekit({
     urlEndpoint: process.env.urlEndpoint
 })
 const isEmpty = require('../helpers/isEmpty')
+const Auth = require('../events/auth')
 
 require('mongoose-type-email')
 mongoose.SchemaTypes.Email.defaults.message = 'Email address is invalid'
@@ -66,12 +68,12 @@ class User extends mongoose.model('User', userSchema) {
         var resetPasswordExpires = Date.now() + 360000; // 6 minutes expired
 
         let properties = {
-            resetPasswordToken : resetPasswordToken,
-            resetPasswordExpires : resetPasswordExpires
+            resetPasswordToken: resetPasswordToken,
+            resetPasswordExpires: resetPasswordExpires
         }
 
         return new Promise((resolve, reject) => {
-            this.findByIdAndUpdate(id, properties, {new:true})
+            this.findByIdAndUpdate(id, properties, { new: true })
                 .then(data => {
                     resolve(data)
                 })
@@ -79,7 +81,7 @@ class User extends mongoose.model('User', userSchema) {
                     reject(err)
                 })
         })
-        
+
     }
 
     static register({ fullname, email, password, password_confirmation }) {
@@ -112,26 +114,34 @@ class User extends mongoose.model('User', userSchema) {
     }
 
 
-    static login(user) {
+    static login(req) {
         return new Promise((resolve, reject) => {
-            this.findOne({ email: user.email })
+            this.findOne({ email: req.body.email })
                 .then(async data => {
 
                     if (isEmpty(data)) return reject("Email doesn't exists, please check your email")
 
-                    let isPasswordValid = await bcrypt.compareSync(user.password, data.encrypted_password)
+                    if (bcrypt.compareSync(req.body.password, data.encrypted_password)) {
+                        let token = jwt.sign({ _id: data._id, language: data.language }, process.env.JWT_SIGNATURE_KEY)
+                        Auth.emit('authorized', data._id)
 
-                    if (!isPasswordValid) return reject("Email or Password is wrong, please check again")
-
-                    let token = jwt.sign({ _id: data._id, language: data.language }, process.env.JWT_SIGNATURE_KEY)
-
-                    resolve({
-                        id: data._id,
-                        fullname: data.fullname,
-                        email: data.email,
-                        image: data.image,
-                        token: token
-                    })
+                        return resolve({
+                            id: data._id,
+                            fullname: data.fullname,
+                            email: data.email,
+                            image: data.image,
+                            token: token
+                        })
+                    } else {
+                        Auth.emit('unauthorized', {
+                            _id: data._id,
+                            email: req.body.email,
+                            source: req.headers['who?']
+                        })
+                        return reject({
+                            errors: 'Email or Password is wrong, please fill valid data.'
+                        })
+                    }
                 })
         })
     }
@@ -162,7 +172,67 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
-    
+    static OAuthGoogle(token) {
+
+        return new Promise((resolve, reject) => {
+            axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+                headers: {
+                    'Authorization': token
+                }
+            })
+                .then(data => {
+                    // console.log(data)
+                    resolve(data)
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+    static findOrRegister(result) {
+        return new Promise((resolve, reject) => {
+            this.findOne({ email: result.data.email })
+                .then(data => {
+                    if (!data) {
+                        this.collection.insert({
+                            fullname: result.data.name,
+                            email: result.data.email,
+                            image: result.data.picture,
+                            language: process.env.language
+                        })
+                            .then(user => {
+                                let newUser = user.ops[0]
+                                
+                                let token = jwt.sign({ _id: newUser._id }, process.env.JWT_SIGNATURE_KEY)
+
+                                return resolve({
+                                    _id: newUser._id,
+                                    fullname: newUser.fullname,
+                                    image: newUser.image,
+                                    email: newUser.email,
+                                    token: token
+                                })
+                            })
+                    } else {
+                        let token = jwt.sign({ _id: data._id }, process.env.JWT_SIGNATURE_KEY)
+
+                        return resolve({
+                            _id: data._id,
+                            fullname: data.fullname,
+                            image: data.image,
+                            email: data.email,
+                            token: token
+                        })
+                    }
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
+
+
 
 
 }

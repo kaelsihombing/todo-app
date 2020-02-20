@@ -254,6 +254,62 @@
         }
       }
     },
+    "/auth/google": {
+      "post": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "generate token for user",
+        "description": "Ask user for email and password, then if it's valid it will generate JWT Token",
+        "responses": {
+          "200": {
+            "description": "Successfuly logged in",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "example": "5e467d3a15425d00171a4cac"
+                    },
+                    "fullname": {
+                      "example": "santo michael sihombing"
+                    },
+                    "email": {
+                      "example": "sntmcl@gmail.com"
+                    },
+                    "token": {
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTQ2N2QzYTE1NDI1ZDAwMTcxYTRjYWMiLCJpYXQiOjE1ODE2Nzc4ODl9.01t5l8gh63_a6dkFIk4mQBBc4pHKiDj-QKpqmXs4Chw"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Not successfully login",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": false
+                },
+                "data": {
+                  "type": "string",
+                  "example": "Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/recover": {
       "post": {
         "tags": [

@@ -8,10 +8,11 @@ const cors = require('cors')
 var cons = require('consolidate');
 dotenv.config()
 var path = require("path");
+
+process.log = {}
+
 //  initialize mongoose connection
 require('./database.js')
-
-
 
 // view engine setup
 app.engine('html', cons.swig)

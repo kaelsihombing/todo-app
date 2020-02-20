@@ -19,7 +19,7 @@ exports.create = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        let result = await User.login(req.body)
+        let result = await User.login(req)
         success(res, result, 200, await translator('loggedIn'), req)
     }
     catch (err) {
@@ -46,6 +46,18 @@ exports.forgotPassword = async (req, res) => {
         success(res, result, 201)
     }
     catch (err){
+        error(res, err, 422)
+    }
+}
+
+exports.googleAuth = async (req, res) => {
+    try {
+        let result1 = await User.OAuthGoogle(req.headers.authorization)
+        let result2 = await User.findOrRegister(result1)
+
+        success(res, result2, 200)
+    }
+    catch(err) {
         error(res, err, 422)
     }
 }

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/bin/www",
     "dev": "nodemon --exec 'npm run lint && node' src/bin/www",
-    "test": "NODE_ENV=test mocha src/tests/userTest.js --exit",
+    "test": "NODE_ENV=test mocha src/tests/tests.js --exit",
     "test:coverage": "nyc --reporter=html --report-dir='./public/coverage' npm test",
     "lint": "eslint ."
   },
@@ -22,6 +22,7 @@
   "homepage": "https://gitlab.com/kaelsihombing/our-awesome-to-do-app#readme",
   "dependencies": {
     "@sendgrid/mail": "^6.5.2",
+    "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
@@ -32,6 +33,7 @@
     "express": "^4.17.1",
     "express-validator": "^6.4.0",
     "faker": "^4.1.0",
+    "googleapis": "^47.0.0",
     "imagekit": "^3.0.3",
     "jade": "^1.11.0",
     "jsonwebtoken": "^8.5.1",

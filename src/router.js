@@ -16,6 +16,7 @@ const Password = require('./controllers/password')
 router.post('/users', validateForm, user.create)
 router.put('/users', multer, authenticate, user.updateData)
 router.post('/auth/login', user.login)
+router.get('/auth/google', user.googleAuth)
 
 //=============TASK-ROUTER
 router.post('/tasks', authenticate, task.createTask);
