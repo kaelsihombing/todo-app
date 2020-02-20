@@ -20,10 +20,10 @@ Auth.on('unauthorized', ({ _id, email, source }) => {
 
   if (process.log.users[_id].loginCount > 5) {
     mailer.send({
-        to: 'sntmcl1@gmail.com',
+        to: email,
         from: process.env.FROM_EMAIL,
         subject: "Allert!",
-        text: `Hi santo \n
+        text: `Hi,\n
         Someone is trying to login into your account! \n\n`
     })
     return
