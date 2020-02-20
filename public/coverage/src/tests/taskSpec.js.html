@@ -1806,7 +1806,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     chai.request(server)
                         .post('/api/v1/tasks')
                         .set('Content-Type', 'application/json')
-                        .set('Authorization', res.body.data.token)
+                        .set('Authorization', 'Bearer ' + res.body.data.token)
                         .send(JSON.stringify(taskSample))
                         .end((err, res) =&gt; {
                             expect(res.status).to.equal(401);
@@ -1828,7 +1828,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     chai.request(server)
                         .post('/api/v1/tasks')
                         .set('Content-Type', 'application/json')
-                        .set('Authorization', res.body.data.token)
+                        .set('Authorization', 'Bearer '+res.body.data.token)
                         .send(JSON.stringify(taskSample))
                         .end((err, res) =&gt; {
                             expect(res.status).to.equal(422);
@@ -1850,15 +1850,15 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
                         .get('/api/v1/tasks')
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
                                 .get(`/api/v1/tasks`)
-                                .set('Authorization', token)
-                                .query({page: page})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ page: page })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
@@ -1881,15 +1881,15 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
                         .get('/api/v1/tasks')
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = lastPage + 1
                             chai.request(server)
                                 .get(`/api/v1/tasks`)
-                                .set('Authorization', token)
-                                .query({page: page})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ page: page })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
                                     let { success, data } = res.body;
@@ -1911,8 +1911,8 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
                         .get('/api/v1/tasks')
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let sortParam = ['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion']
                             let randomParam = sortParam[Math.floor(Math.random() * sortParam.length)]
@@ -1920,8 +1920,8 @@ describe('TASK API UNIT TESTING', () =&gt; {
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
                                 .get(`/api/v1/tasks/sort/asc`)
-                                .set('Authorization', token)
-                                .query({sort: randomParam, page: page})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
@@ -1943,16 +1943,16 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
                         .get('/api/v1/tasks')
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let randomParam = 'randomParam'
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
                                 .get(`/api/v1/tasks/sort/asc`)
-                                .set('Authorization', token)
-                                .query({sort: randomParam, page: page})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -1971,9 +1971,9 @@ describe('TASK API UNIT TESTING', () =&gt; {
                 .end((err, res) =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
-                    .get('/api/v1/tasks')
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .get('/api/v1/tasks')
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let sortParam = ['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion']
                             let randomParam = sortParam[Math.floor(Math.random() * sortParam.length)]
@@ -1982,8 +1982,8 @@ describe('TASK API UNIT TESTING', () =&gt; {
                             page = page.toString()
                             chai.request(server)
                                 .get(`/api/v1/tasks/sort/asc`)
-                                .set('Authorization', token)
-                                .query({sort: randomParam, page: page})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -2004,8 +2004,8 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
                         .get('/api/v1/tasks')
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let sortParam = ['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion']
                             let randomParam = sortParam[Math.floor(Math.random() * sortParam.length)]
@@ -2013,8 +2013,8 @@ describe('TASK API UNIT TESTING', () =&gt; {
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
                                 .get(`/api/v1/tasks/sort/desc`)
-                                .set('Authorization', token)
-                                .query({sort: randomParam, page: page})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
@@ -2036,16 +2036,16 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
                         .get('/api/v1/tasks')
-                        .query({page: 1, pagination: false})
-                        .set('Authorization', token)
+                        .query({ page: 1, pagination: false })
+                        .set('Authorization', 'Bearer ' + token)
                         .end((err, res) =&gt; {
                             let randomParam = 'randomParam'
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
                                 .get(`/api/v1/tasks/sort/desc`)
-                                .set('Authorization', token)
-                                .query({sort: randomParam, page: page})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -2065,8 +2065,8 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
                         .get('/api/v1/tasks')
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let sortParam = ['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion']
                             let randomParam = sortParam[Math.floor(Math.random() * sortParam.length)]
@@ -2075,8 +2075,8 @@ describe('TASK API UNIT TESTING', () =&gt; {
                             page = page.toString()
                             chai.request(server)
                                 .get(`/api/v1/tasks/sort/desc`)
-                                .set('Authorization', token)
-                                .query({sort: randomParam, page: page})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ sort: randomParam, page: page })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -2098,7 +2098,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     chai.request(server)
                         .get('/api/v1/tasks')
                         .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                             let taskSample = taskFixtures.create()
@@ -2107,7 +2107,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
                                 .put(`/api/v1/tasks`)
                                 .set('Content-Type', 'application/json')
                                 .set('Authorization', token)
-                                .query({id: id})
+                                .query({ id: id })
                                 .send(JSON.stringify(taskSample))
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(201);
@@ -2131,7 +2131,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     chai.request(server)
                         .get('/api/v1/tasks')
                         .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                             let taskSample = taskFixtures.create()
@@ -2141,7 +2141,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
                                 .put(`/api/v1/tasks`)
                                 .set('Content-Type', 'application/json')
                                 .set('Authorization', token)
-                                .query({id: id})
+                                .query({ id: id })
                                 .send(JSON.stringify(taskSample))
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
@@ -2162,7 +2162,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     chai.request(server)
                         .get('/api/v1/tasks')
                         .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let taskSample = taskFixtures.create()
                             let id = 'randomId'
@@ -2170,7 +2170,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
                                 .put('/api/v1/tasks')
                                 .set('Content-Type', 'application/json')
                                 .set('Authorization', token)
-                                .query({id: id})
+                                .query({ id: id })
                                 .send(JSON.stringify(taskSample))
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
@@ -2191,7 +2191,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     chai.request(server)
                         .get('/api/v1/tasks')
                         .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                             let taskSample = taskFixtures.create()
@@ -2206,7 +2206,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
                                         .put(`/api/v1/tasks`)
                                         .set('Content-Type', 'application/json')
                                         .set('Authorization', token2)
-                                        .query({id: existingTaskId})
+                                        .query({ id: existingTaskId })
                                         .send(JSON.stringify(taskSample))
                                         .end((err, res) =&gt; {
                                             expect(res.status).to.equal(422);
@@ -2231,16 +2231,16 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
                     chai.request(server)
                         .get(`/api/v1/tasks`)
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false, importanceLevel: randomParam})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, importanceLevel: randomParam })
                         .end((err, res) =&gt; {
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
                                 .get(`/api/v1/tasks/filter/importance`)
-                                .set('Authorization', token)
-                                .query({value: randomParam, page: page,})
-                                .end((err, res) =&gt; {                               
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
+                                .end((err, res) =&gt; {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
                                     expect(res.body).to.have.property('success');
@@ -2263,16 +2263,16 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
                     chai.request(server)
                         .get(`/api/v1/tasks`)
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false, importanceLevel: randomParam})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, importanceLevel: randomParam })
                         .end((err, res) =&gt; {
                             randomParam = 'randomParam'
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
                                 .get(`/api/v1/tasks/filter/importance`)
-                                .set('Authorization', token)
-                                .query({value: randomParam, page: page,})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -2294,15 +2294,15 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
                     chai.request(server)
                         .get(`/api/v1/tasks`)
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false, importanceLevel: randomParam})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, importanceLevel: randomParam })
                         .end((err, res) =&gt; {
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = lastPage + 1
                             chai.request(server)
                                 .get(`/api/v1/tasks/filter/importance`)
-                                .set('Authorization', token)
-                                .query({value: randomParam, page: page,})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -2325,15 +2325,15 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
                     chai.request(server)
                         .get(`/api/v1/tasks`)
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false, completion: randomParam})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, completion: randomParam })
                         .end((err, res) =&gt; {
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
                                 .get(`/api/v1/tasks/filter/completion`)
-                                .set('Authorization', token)
-                                .query({value: randomParam, page: page,})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
@@ -2357,16 +2357,16 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
                     chai.request(server)
                         .get(`/api/v1/tasks`)
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false, completion: randomParam})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, completion: randomParam })
                         .end((err, res) =&gt; {
                             randomParam = 'randomParam'
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = Math.ceil(Math.random() * (lastPage))
                             chai.request(server)
                                 .get(`/api/v1/tasks/filter/completion`)
-                                .set('Authorization', token)
-                                .query({value: randomParam, page: page,})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -2388,15 +2388,15 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let randomParam = valueParam[Math.floor(Math.random() * valueParam.length)]
                     chai.request(server)
                         .get(`/api/v1/tasks`)
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false, completion: randomParam})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false, completion: randomParam })
                         .end((err, res) =&gt; {
                             let lastPage = Math.ceil(res.body.data.totalDocs / 10)
                             let page = lastPage + 1
                             chai.request(server)
                                 .get(`/api/v1/tasks/filter/completion`)
-                                .set('Authorization', token)
-                                .query({value: randomParam, page: page,})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ value: randomParam, page: page, })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -2417,14 +2417,14 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
                         .get('/api/v1/tasks')
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let id = 'randomId'
                             chai.request(server)
                                 .delete('/api/v1/tasks')
-                                .set('Authorization', token)
-                                .query({id: id})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ id: id })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(422);
                                     let { success, error } = res.body;
@@ -2444,8 +2444,8 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
                         .get('/api/v1/tasks')
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                             let taskSample = taskFixtures.create()
@@ -2459,8 +2459,8 @@ describe('TASK API UNIT TESTING', () =&gt; {
                                     chai.request(server)
                                         .delete(`/api/v1/tasks`)
                                         .set('Content-Type', 'application/json')
-                                        .set('Authorization', token2)
-                                        .query({id: existingTaskId})
+                                        .set('Authorization', 'Bearer ' + token2)
+                                        .query({ id: existingTaskId })
                                         .send(JSON.stringify(taskSample))
                                         .end((err, res) =&gt; {
                                             expect(res.status).to.equal(422);
@@ -2481,15 +2481,15 @@ describe('TASK API UNIT TESTING', () =&gt; {
                     let token = res.body.data.token
                     chai.request(server)
                         .get('/api/v1/tasks')
-                        .set('Authorization', token)
-                        .query({page: 1, pagination: false})
+                        .set('Authorization', 'Bearer ' + token)
+                        .query({ page: 1, pagination: false })
                         .end((err, res) =&gt; {
                             let i = Math.floor(Math.random() * (res.body.data.docs.length - 1))
                             let id = res.body.data.docs[i]._id
                             chai.request(server)
                                 .delete(`/api/v1/tasks`)
-                                .set('Authorization', token)
-                                .query({id: id})
+                                .set('Authorization', 'Bearer ' + token)
+                                .query({ id: id })
                                 .end((err, res) =&gt; {
                                     expect(res.status).to.equal(200);
                                     expect(res.body).to.be.an('object');
@@ -2509,7 +2509,7 @@ describe('TASK API UNIT TESTING', () =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Feb 20 2020 18:48:14 GMT+0700 (Western Indonesia Time)
+                at Thu Feb 20 2020 23:10:41 GMT+0700 (Western Indonesia Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>
