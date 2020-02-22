@@ -26,9 +26,9 @@ exports.viewTask = async (req, res) => {
     }
 }
 
-exports.sortTaskAsc = async (req, res) => {
-    try {
-        let result = await Task.sortTaskByParamsAsc(req.user._id, req.query.sort, req.query.page)
+exports.sortTask = async (req, res) => {
+    try{
+        let result = await Task.findSortedTask(req.user._id, req.query.order, req.query.sort, req.query.page)
         success(res, result, 200)
     }
     catch (err) {
@@ -36,29 +36,9 @@ exports.sortTaskAsc = async (req, res) => {
     }
 }
 
-exports.sortTaskDesc = async (req, res) => {
+exports.filterTask = async (req, res) => {
     try {
-        let result = await Task.sortTaskByParamsDesc(req.user._id, req.query.sort, req.query.page)
-        success(res, result, 200)
-    }
-    catch (err) {
-        error(res, err, 422)
-    }
-}
-
-exports.filterTaskImportance = async (req, res) => {
-    try {
-        let result = await Task.filterTaskByImportance(req.user._id, req.query.value, req.query.page)
-        success(res, result, 200)
-    }
-    catch (err) {
-        error(res, err, 422)
-    }
-}
-
-exports.filterTaskCompletion = async (req, res) => {
-    try {
-        let result = await Task.filterTaskByCompletion(req.user._id, req.query.value, req.query.page)
+        let result = await Task.findFilteredTask(req.user._id, req.query.filter, req.query.importanceLevel, req.query.completion, req.query.page)
         success(res, result, 200)
     }
     catch (err) {
