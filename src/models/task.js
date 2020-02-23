@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 
 const now = new Date()
-const currentDate = now.setHours(0,0,0,0)
+const currentDate = now.setHours(0, 0, 0, 0)
 
 const taskSchema = new Schema({
     title: {
@@ -60,14 +60,14 @@ class Task extends mongoose.model('Task', taskSchema) {
     }
 
     static findTask(owner, page, pagination, importanceLevel, completion) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             let options = {
                 page: page,
                 limit: 10,
                 pagination: JSON.parse(pagination),
                 sort: '-createdAt',
                 collation: { locale: 'en' }
-            };
+            }
 
             let params = {
                 owner: owner,
@@ -76,127 +76,125 @@ class Task extends mongoose.model('Task', taskSchema) {
             }
             for (let prop in params) if (!params[prop]) delete params[prop];
 
-            this.find(params)
-                .then(data => {
-                    let lastPage = Math.ceil(data.length / 10)
-                    if (options.page > lastPage) return reject("Page does not exist")
-                })
-
-            this.paginate({ owner: owner }, options)
-                .then(data => {
-                    resolve(data)
-                })
-        })
-    }
-
-    static sortTaskByParamsAsc(owner, sort, page) {
-        return new Promise((resolve, reject) => {
-            let options = {
-                page: page,
-                limit: 10,
-                sort: `${sort}`,
-                collation: { locale: 'en' }
-            };
-
-            if (['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion'].indexOf(options.sort) < 0) {
-                return reject("Invalid sorting parameter!")
-            }
-
-            this.find({ owner: owner })
-                .then(data => {
-                    let lastPage = Math.ceil(data.length / 10)
-                    if (options.page > lastPage) return reject("Page does not exist")
-                })
-
-            this.paginate({ owner: owner }, options)
-                .then(data => {
-                    resolve(data)
-                })
-        })
-    }
-
-    static sortTaskByParamsDesc(owner, sort, page) {
-        return new Promise((resolve, reject) => {
-            let options = {
-                page: page,
-                limit: 10,
-                sort: `-${sort}`,
-                collation: { locale: 'en' }
-            };
-
-            if (['-title', '-createdAt', '-dueDate', '-importanceLevel', '-completion'].indexOf(options.sort) < 0) {
-                return reject("Invalid sorting parameter!")
-            }
-
-            this.find({ owner: owner })
-                .then(data => {
-                    let lastPage = Math.ceil(data.length / 10)
-                    if (options.page > lastPage) return reject("Page does not exist")
-                })
-
-            this.paginate({ owner: owner }, options)
-                .then(data => {
-                    resolve(data)
-                })
-        })
-    }
-
-    static filterTaskByImportance(owner, value, page) {
-        return new Promise((resolve, reject) => {
-            let options = {
-                page: page,
-                limit: 10,
-                collation: { locale: 'en' }
-            };
-            let params = {
-                owner: owner,
-                importanceLevel: value,
-            }
-
-            if (['1', '2', '3'].indexOf(params.importanceLevel) < 0) {
-                return reject("Invalid importancelevel value parameter!")
-            }
 
             this.find(params)
                 .then(data => {
-                    
                     let lastPage = Math.ceil(data.length / 10)
-                    if (options.page > lastPage) return reject("Page does not exist")
-                })
+                    if (lastPage == 0) lastPage = 1
+                    if (options.page > lastPage || options.page < 0) options.page = 1
 
-            this.paginate(params, options)
-                .then(data => {
-                    resolve(data)
+                    this.paginate({ owner: owner }, options)
+                        .then(data => {
+                            resolve(data)
+                        })
                 })
         })
     }
 
-    static filterTaskByCompletion(owner, value, page) {
+
+    static findSortedTask(owner, order, sort, page) {
         return new Promise((resolve, reject) => {
+            let options = {}
+            switch (order) {
+                case "ascending":
+                    options = {
+                        page: page,
+                        limit: 10,
+                        sort: `${sort}`,
+                        collation: { locale: 'en' }
+                    }
+    
+                    if (['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion'].indexOf(options.sort) < 0) {
+                        return reject("Invalid sorting parameter!")}
+
+                    this.find({ owner: owner })
+                        .then(data => {
+                            let lastPage = Math.ceil(data.length / 10)
+                            if (lastPage === 0) lastPage = 1
+                            if (options.page > lastPage || options.page < 0) options.page = 1
+
+                            this.paginate({ owner: owner }, options)
+                                .then(data => {
+                                    resolve(data)
+                                })
+                        })
+
+                    break;
+
+                case "descending":
+                    options = {
+                        page: page,
+                        limit: 10,
+                        sort: `-${sort}`,
+                        collation: { locale: 'en' }
+                    }
+
+                    if (['-title', '-createdAt', '-dueDate', '-importanceLevel', '-completion'].indexOf(options.sort) < 0) {
+                        return reject("Invalid sorting parameter!")}
+
+                    this.find({ owner: owner })
+                        .then(data => {
+                            let lastPage = Math.ceil(data.length / 10)
+                            if (lastPage === 0) lastPage = 1
+                            if (options.page > lastPage || options.page < 0) options.page = 1
+
+                            this.paginate({ owner: owner }, options)
+                                .then(data => {
+                                    resolve(data)
+                                })
+                        })
+
+                    break;
+
+                default:
+                    return reject("Invalid sorting order")
+            }
+        })
+    }
+
+    static findFilteredTask(owner, filter, importanceLevel, completion, page) {
+        return new Promise((resolve, reject) => {
+            let params = {}
+            switch (filter) {
+                case 'importance':
+                    params = {
+                        owner: owner,
+                        importanceLevel: importanceLevel,
+                    }
+                    if (['1', '2', '3'].indexOf(params.importanceLevel) < 0) {
+                        return reject("Invalid importancelevel value parameter!")
+                    }
+                    break;
+
+                case 'completion':
+                    params = {
+                        owner: owner,
+                        completion: completion,
+                    }
+
+                    if (['true', 'false'].indexOf(params.completion) < 0) {
+                        return reject("Invalid completion value parameter!")
+                    }
+                    break;
+            }
+
             let options = {
                 page: page,
                 limit: 10,
+                sort: '-createdAt',
                 collation: { locale: 'en' }
             };
-            let params = {
-                owner: owner,
-                completion: value,
-            }
-
-            if (['true', 'false'].indexOf(params.completion) < 0) {
-                return reject("Invalid completion value parameter!")
-            }
 
             this.find(params)
                 .then(data => {
-                   
                     let lastPage = Math.ceil(data.length / 10)
-                    if (options.page > lastPage) return reject("Page does not exist")
-                })
+                    if (lastPage === 0) lastPage = 1
+                    if (options.page > lastPage || options.page < 0) options.page = 1
 
-            this.paginate(params, options)
-                .then(data => {
-                    resolve(data)
+                    this.paginate(params, options)
+                        .then(data => {
+                            resolve(data)
+                        })
                 })
         })
     }
@@ -217,7 +215,7 @@ class Task extends mongoose.model('Task', taskSchema) {
 
             if (bodyParams.completion === true) params.completion = true
             if (bodyParams.completion === false) params.completion = false
-            
+
 
             this.findById(id)
                 .then(data => {

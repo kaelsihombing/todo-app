@@ -21,10 +21,8 @@ router.get('/auth/google', user.googleAuth)
 //=============TASK-ROUTER
 router.post('/tasks', authenticate, task.createTask);
 router.get('/tasks', authenticate, task.viewTask);
-router.get('/tasks/sort/asc', authenticate, task.sortTaskAsc);
-router.get('/tasks/sort/desc', authenticate, task.sortTaskDesc);
-router.get('/tasks/filter/importance', authenticate, task.filterTaskImportance);
-router.get('/tasks/filter/completion', authenticate, task.filterTaskCompletion);
+router.get('/tasks/sort', authenticate, task.sortTask);
+router.get('/tasks/filter', authenticate, task.filterTask);
 router.put('/tasks', authenticate, task.editTask);
 router.delete('/tasks', authenticate, task.deleteTask);
 
