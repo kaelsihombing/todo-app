@@ -359,6 +359,77 @@
         }
       }
     },
+    "/myprogress": {
+      "post": {
+        "tags": [
+          "user collection"
+        ],
+        "summary": "to get user's progress in the current week",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "progress": {
+                      "example": 55
+                    },
+                    "date_now": {
+                      "example": 23
+                    },
+                    "message": {
+                      "example": "Congratulation! you achieved 55% this week! keep spirit"
+                    },
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "index_of_week": {
+                          "example": 3
+                        },
+                        "first_date_to_count": {
+                          "example": 22
+                        },
+                        "last_date_to_count": {
+                          "example": 28
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "failed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "example": "invalid token"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
     "/tasks": {
       "post": {
         "tags": [
