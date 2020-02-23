@@ -103,9 +103,10 @@ class Task extends mongoose.model('Task', taskSchema) {
                         sort: `${sort}`,
                         collation: { locale: 'en' }
                     }
-    
+
                     if (['title', 'createdAt', 'dueDate', 'importanceLevel', 'completion'].indexOf(options.sort) < 0) {
-                        return reject("Invalid sorting parameter!")}
+                        return reject("Invalid sorting parameter!")
+                    }
 
                     this.find({ owner: owner })
                         .then(data => {
@@ -130,7 +131,8 @@ class Task extends mongoose.model('Task', taskSchema) {
                     }
 
                     if (['-title', '-createdAt', '-dueDate', '-importanceLevel', '-completion'].indexOf(options.sort) < 0) {
-                        return reject("Invalid sorting parameter!")}
+                        return reject("Invalid sorting parameter!")
+                    }
 
                     this.find({ owner: owner })
                         .then(data => {

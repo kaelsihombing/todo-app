@@ -29,8 +29,6 @@ exports.login = async (req, res) => {
 
 exports.updateData = async (req, res) => {
     try {
-        console.log('IMAGE',res.file)
-        console.log('BODY', req.body)
         let result = await User.updateData(req.user._id, req)
         
         success(res, result, 201, await translator('userUpdated'), req)
@@ -59,5 +57,15 @@ exports.googleAuth = async (req, res) => {
     }
     catch(err) {
         error(res, err, 422)
+    }
+}
+
+exports.myProgress = async (req, res) => {
+    try {
+        let result = await User.myProgress(req.user._id)
+        success(res, result, 200)
+    }
+    catch(err) {
+        error(res, err, 442)
     }
 }

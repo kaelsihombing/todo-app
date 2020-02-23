@@ -13,10 +13,11 @@ const {check} = require('express-validator');
 const Password = require('./controllers/password')
 
 //=============USER-ROUTER
-router.post('/users', validateForm, user.create)
-router.put('/users', multer, authenticate, user.updateData)
-router.post('/auth/login', user.login)
-router.get('/auth/google', user.googleAuth)
+router.post('/users', validateForm, user.create);
+router.put('/users', multer, authenticate, user.updateData);
+router.post('/auth/login', user.login);
+router.get('/auth/google', user.googleAuth);
+router.get('/myprogress', authenticate,user.myProgress);
 
 //=============TASK-ROUTER
 router.post('/tasks', authenticate, task.createTask);
@@ -25,6 +26,7 @@ router.get('/tasks/sort', authenticate, task.sortTask);
 router.get('/tasks/filter', authenticate, task.filterTask);
 router.put('/tasks', authenticate, task.editTask);
 router.delete('/tasks', authenticate, task.deleteTask);
+
 
 //=============Password RESET
 router.post('/recover', [

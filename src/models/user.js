@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const Task = require('./task')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
@@ -150,7 +151,6 @@ class User extends mongoose.model('User', userSchema) {
     static async updateData(id, req) {
         let params = {
             fullname: req.body.fullname,
-            email: req.body.email,
             language: req.body.language
         }
 
@@ -204,7 +204,7 @@ class User extends mongoose.model('User', userSchema) {
                         })
                             .then(user => {
                                 let newUser = user.ops[0]
-                                
+
                                 let token = jwt.sign({ _id: newUser._id }, process.env.JWT_SIGNATURE_KEY)
 
                                 return resolve({
@@ -233,7 +233,84 @@ class User extends mongoose.model('User', userSchema) {
         })
     }
 
+    static myProgress(owner) {
+        return new Promise((resolve, reject) => {
 
+            // get current date
+            var currentDate = new Date();
+            let dateNow = currentDate.getDate();
+            console.log('DATE NOW: ',dateNow);
+
+            // Find the user tasks
+            Task.find({ owner: owner })
+                .then(data => {
+
+                        let q = [[], [], [], [], []];
+                        for (let z = 1; z <= 31; z++) {
+                            if (q[0].length > 6) {
+                                if (q[1].length > 6) {
+                                    if (q[2].length > 6) {
+                                        if (q[3].length > 6) {
+                                            q[4].push(z);
+                                        } else {
+                                            q[3].push(z);
+                                        }
+                                    } else {
+                                        q[2].push(z);
+                                    }
+                                } else {
+                                    q[1].push(z);
+                                }
+                            } else {
+                                q[0].push(z);
+                            }
+                        }
+                        //===========GET THE INDEX OF WEEK===========
+                        let indexOfWeek = 0;
+                        for (let i = 0; i <= q.length - 1; i++) {
+                            for (let j = 0; j <= q[i].length - 1; j++) {
+                                if (dateNow === q[i][j]) {
+                                    indexOfWeek = i;
+                                }
+                            }
+                        }
+        
+                        let firstDateToCount = q[indexOfWeek][0];
+                        let lastDateToCount = q[indexOfWeek][q[indexOfWeek].length - 1];
+                        // ==============GET THE TOTAL OF SCORE IN A WEEK=================
+                        let b = 0;
+                        let x = 0;
+        
+                        for (let r = 0; r <= data.length - 1; r++) {
+                            b = b + 1;
+                            if (data[r].completion === true && data[r].createdAt.getDate() >= firstDateToCount && data[r].createdAt.getDate() <= lastDateToCount) {
+                                x = x + 1;
+                            }
+                        }
+        
+                        let percentX = 100 / b;
+                        let total = parseInt((percentX * x).toFixed(0));
+
+                        var summary = {
+                            index_of_week:indexOfWeek,
+                            first_date_to_count: q[indexOfWeek][0],
+                            last_date_to_count: q[indexOfWeek][q[indexOfWeek].length - 1],
+                        }
+                        console.log(summary)
+                        console.log('Congratulation! you achieved', total, '% this week! keep spirit')
+
+                    resolve({
+                        progress: total,
+                        date_now: dateNow,
+                        message: `Congratulation! you achieved ${total}% this week! keep spirit`,
+                        summary
+                    })
+                })
+                .catch(err => {
+                    reject(err)
+                })
+        })
+    }
 
 
 }
