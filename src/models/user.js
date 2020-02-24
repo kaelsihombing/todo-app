@@ -239,12 +239,13 @@ class User extends mongoose.model('User', userSchema) {
             // get current date
             var currentDate = new Date();
             let dateNow = currentDate.getDate();
-            console.log('DATE NOW: ',dateNow);
+            // console.log('DATE NOW: ',dateNow);
 
             // Find the user tasks
             Task.find({ owner: owner })
                 .then(data => {
-
+                    // console.log(data)
+                    if (isEmpty(data)) return reject("Seem you haven't made any task yet, create it now")
                         let q = [[], [], [], [], []];
                         for (let z = 1; z <= 31; z++) {
                             if (q[0].length > 6) {
@@ -296,13 +297,13 @@ class User extends mongoose.model('User', userSchema) {
                             first_date_to_count: q[indexOfWeek][0],
                             last_date_to_count: q[indexOfWeek][q[indexOfWeek].length - 1],
                         }
-                        console.log(summary)
-                        console.log('Congratulation! you achieved', total, '% this week! keep spirit')
+                        // console.log(summary)
+                        // console.log('Congratulation! you achieved', total, '% this week! keep spirit')
 
                     resolve({
                         progress: total,
                         date_now: dateNow,
-                        message: `Congratulation! you achieved ${total}% this week! keep spirit`,
+                        message: `You achieved ${total}% this week! keep spirit`,
                         summary
                     })
                 })
