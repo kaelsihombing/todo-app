@@ -1,8 +1,15 @@
-function success(res, data, statusCode) {
-    return res.status(statusCode).json({
+const isEmpty = require('./isEmpty')
+
+function success(res, data, statusCode, message = undefined) {
+    const response = {
         success: true,
+        message: message,
         data
-    })
+    }
+
+    if(isEmpty(message)) delete response.message
+
+    return res.status(statusCode).json(response)
 }
 
 function error(res, err, statusCode) {
@@ -12,7 +19,7 @@ function error(res, err, statusCode) {
     })
 }
 
-module.export = {
+module.exports = {
     success,
     error
 };

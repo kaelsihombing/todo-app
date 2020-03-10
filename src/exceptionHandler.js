@@ -1,3 +1,4 @@
+const translator = require('./helpers/translate').translator
 exports.serverError = (err, req, res, next) => {
 	res.status(500).json ({
 		status: false,
@@ -5,9 +6,9 @@ exports.serverError = (err, req, res, next) => {
 	})
 }
 
-exports.notFound = (req, res) => {
+exports.notFound = async (req, res) => {	
 	res.status(404).json ({
 		status: false,
-		errors: 'You Lost! please make sure your end point is valid'
+		errors: await translator('wrongEndPoint', req)
 	})
 }

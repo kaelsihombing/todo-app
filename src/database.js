@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const dbConnectionString = {
     development: process.env.DB_CONNECTION,
     test: process.env.DB_CONNECTION_TEST,
-    staging: process.env.DB_CONNECTION_STAGGING,
+    staging: process.env.DB_CONNECTION_STAGING,
     production: process.env.DB_CONNECTION_PRODUCTION
 }
 
@@ -12,12 +12,14 @@ mongoose.connect(
     {
         useNewUrlParser: true,
         useCreateIndex: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
+        useFindAndModify: false  
     }
 )
     .then(() => {
         console.log(`Database Connected`)
     })
-    .catch(() => {
+    .catch(err => {
+        console.log(err)
         process.exit(1)
     })
