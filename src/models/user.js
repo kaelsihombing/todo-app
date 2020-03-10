@@ -149,11 +149,13 @@ class User extends mongoose.model('User', userSchema) {
     }
 
     static async updateData(id, req) {
+        console.log('ID: ', id);
+        console.log('Body: ',req.body)
         let params = {
             fullname: req.body.fullname,
             language: req.body.language
         }
-
+        
         for (let prop in params) if (!params[prop]) delete params[prop];
         if (req.file) {
             let url = await imagekit.upload({ file: req.file.buffer.toString('base64'), fileName: `IMG-${Date.now()}` })
